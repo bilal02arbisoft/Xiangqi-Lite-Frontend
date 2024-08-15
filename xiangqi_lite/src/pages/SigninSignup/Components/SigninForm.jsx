@@ -27,7 +27,7 @@ function SignInForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!validateForm()) return;
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
     try {
@@ -37,6 +37,7 @@ function SignInForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
       const result = await response.json();
@@ -57,7 +58,7 @@ function SignInForm() {
     <form className="bg-white p-8 rounded shadow-md w-full max-w-md" onSubmit={handleSubmit}>
       <InputField 
         label="Username" 
-        placeholder="Username" 
+        placeholder="Username or Email" 
         name="username" 
         value={formData.username} 
         onChange={handleChange} 
