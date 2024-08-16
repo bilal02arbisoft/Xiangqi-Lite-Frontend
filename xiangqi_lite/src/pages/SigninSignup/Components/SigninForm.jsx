@@ -42,10 +42,22 @@ function SignInForm() {
 
       const result = await response.json();
       if (response.ok) {
+        // Extract the tokens from the response
+        const { access_token: access, refresh_token: refresh } = result;
+        console.log("access token: "+result)
+
+        // Store the tokens in localStorage
+        localStorage.setItem('access_token', access);
+        localStorage.setItem('refresh_token', refresh);
+
         setMessage('Sign in successful!');
-        // Handle successful sign-in (e.g., redirect or update state)
       } else {
-        setMessage(result.message || 'Sign in failed');
+        const newErrors = {};
+        if (result.username) newErrors.username = result.username[0];
+        if (result.password) newErrors.password = result.password[0];
+
+        setErrors(newErrors);
+        setMessage(result.detail || 'Sign in failed');
       }
     } catch (error) {
       setMessage('An error occurred');
@@ -82,3 +94,4 @@ function SignInForm() {
 }
 
 export default SignInForm;
+
