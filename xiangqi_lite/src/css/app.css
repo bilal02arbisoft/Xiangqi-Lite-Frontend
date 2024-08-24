@@ -1,0 +1,50 @@
+@import-normalize;
+@import "fonts.css";
+@import "buttons.css";
+@import "../components/Board/css/squares.css";
+@import "../components/Board/css/board.css";
+@import "../components/BoardInfo/css/board-info.css";
+@import "../components/BoardInfo/css/captured-piece.css";
+@import "../components/BoardInfo/css/FEN-generator.css";
+@import "../components/Board/css/piece.css";
+
+
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: rgb(253, 253, 253);
+  color: #393030;
+  margin: 0 auto;
+  max-width: 1100px;
+}
+* {
+  font-family: Ubuntu;
+}
+h1 {
+  border-radius: 5px;
+  padding: 10px 40px;
+  font-weight: bold;
+  font-size: 35px;
+}
+.red {
+  background-color: hsl(9.18, 95.51%, 34.9%);
+}
+.black {
+  background-color: hsl(46.67, 13.85%, 12.75%);
+}
+
+
+.app__container {
+  display: grid;
+  grid-template-columns: 700px 1fr;
+  grid-template-rows: 1fr;
+  gap: 10px;
+
+}

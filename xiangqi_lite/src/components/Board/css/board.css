@@ -1,0 +1,14 @@
+.board {
+    margin-top: 120px;
+    margin-bottom: 120px;
+    margin-left: 0px;
+    display: grid;
+    grid-template-columns: repeat(9, 65px); /* Match square size */
+    grid-template-rows: repeat(10, 65px); /* Match square size */
+    width: 585px; /* Adjusted width to match 9 columns of 65px */
+    height: 650px; /* Adjusted height to match 10 rows of 65px */
+    background: url(../../../images/xiangqi_gmchess_wood.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

@@ -1,0 +1,13 @@
+.piece {
+  width: 55px; /* Adjust to better fit the square */
+  height: 55px; /* Adjust to better fit the square */
+  border-radius: 70%;
+  box-shadow: rgba(0, 0, 0, 0.1) 4px 4px 5px, 
+              rgba(255, 255, 255, 0.3) 0px 4px 2px 0px inset, 
+              rgba(0, 0, 0, 0.3) 0px -3px 2px 0px inset;
+  /* Remove margin */
+  margin: 0;
+}
+.highlighted {
+  border: 2px solid hsl(60, 100%, 50%); /* Add a border to highlight the piece */
+}
