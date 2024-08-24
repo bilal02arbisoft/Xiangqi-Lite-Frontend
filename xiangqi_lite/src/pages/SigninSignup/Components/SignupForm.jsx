@@ -64,6 +64,7 @@ function SignUpForm() {
       const result = await response.json();
       console.log('Server response:', result); 
 
+
       if (response.ok) {
         setMessage('Sign up successful!');
         setFormData({

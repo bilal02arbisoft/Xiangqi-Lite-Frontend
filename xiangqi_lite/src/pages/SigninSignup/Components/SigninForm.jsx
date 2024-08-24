@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import InputField from '../../../components/InputField';
 import Button from '../../../components/Button';
+import { useNavigate } from 'react-router-dom';
+
 
 function SignInForm() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -51,6 +54,7 @@ function SignInForm() {
         localStorage.setItem('refresh_token', refresh);
 
         setMessage('Sign in successful!');
+        navigate('/profile')
       } else {
         const newErrors = {};
         if (result.username) newErrors.username = result.username[0];
