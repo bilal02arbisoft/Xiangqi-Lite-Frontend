@@ -50,7 +50,6 @@ const ProfileEditPage = () => {
           console.error('Error fetching profile:', error);
         });
 
-      // Fetch friends
       axios.get('http://127.0.0.1:8000/friendship/friends/', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -252,8 +251,6 @@ const ProfileEditPage = () => {
           </div>
           <div>
             <span>{friend.username}</span>
-            {/* Display if the person is a friend */}
-            {/* <p className="text-xs text-gray-500">{friend.is_friend ? "Friend" : "Not a Friend"}</p>  */}
           </div>
         </div>
       ))}

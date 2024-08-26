@@ -11,7 +11,7 @@ const FriendsPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('access_token');
 
-    // Fetch friends
+   
     axios.get('http://127.0.0.1:8000/friendship/friends/', {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -24,8 +24,6 @@ const FriendsPage = () => {
     .catch(error => {
       console.error('Error fetching friends:', error);
     });
-
-    // Fetch friend requests
     axios.get('http://127.0.0.1:8000/friendship/requests/', {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -129,7 +127,7 @@ const FriendsPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center" style={{ backgroundColor: 'transparent' }}>
       <div className="w-full max-w-4xl p-8" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)' }}>
-        {/* Tabs */}
+        
         <div className="flex justify-between mb-8">
           <button 
             onClick={() => setActiveTab('friends')} 
@@ -151,7 +149,7 @@ const FriendsPage = () => {
           </button>
         </div>
 
-        {/* Friends Section */}
+       
         {activeTab === 'friends' && (
           <div className="mb-12">
             {friends.length > 0 ? (
@@ -175,7 +173,7 @@ const FriendsPage = () => {
           </div>
         )}
 
-        {/* Friend Requests Section */}
+        
         {activeTab === 'requests' && (
           <div>
             {friendRequests.length > 0 ? (
@@ -215,7 +213,7 @@ const FriendsPage = () => {
           </div>
         )}
 
-        {/* Search Users Section */}
+        
         {activeTab === 'search' && (
           <div>
             <div className="mb-4">
