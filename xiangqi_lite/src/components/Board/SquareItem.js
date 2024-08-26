@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useDrop } from 'react-dnd';
-import { BoardContext } from "../../pages/BoardPage";
+import { BoardContext } from "pages/Game/BoardPage";
 import Piece from "./Piece";
 
 class ErrorBoundary extends React.Component {

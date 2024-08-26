@@ -7,11 +7,11 @@ import {
     cannon,
     knight,
     checkDanger,
-  } from "./pieceLogic"
+  } from "utils/pieceLogic"
 
   
 export function findAvailableSqr(sqr,piece, color, row, column) {
-    // console.log('findAvailableSqr params:', { sqr, piece, color, row, column });
+
     const newSqr = [...sqr];
     const targetSqr = [];
     const selectSqrById = (id) => newSqr.find((s) => s.id === id);
@@ -63,7 +63,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
       const originalIndex = simulateSqr.findIndex(
         (s) => s.id === `${row}-${column}`
       );
-      console.log('target',row);
       const destinationIndex = simulateSqr.findIndex(
         (s) => s.id === `${target.row}-${target.column}`
       );
@@ -78,9 +77,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         piece: piece,
         color: color,
       };
-      console.log("ValidatedTarget:",validatedTargetSqr)
-      console.log("Target:",targetSqr)
-      
   
       const kingSqr = simulateSqr.find(
         
@@ -146,16 +142,13 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     setFullMoveNumber,
     checkGameOver,
     setCounter,
-    setSelectedSquareInfo
 ) {
-    console.log('MovePiece called with:', { piece, color, row, column, counter, currentTurn });
-
+   
     if (counter % 2 === 0) {
-        // This block runs when it's time to select a piece to move
+       
         if (color === currentTurn) {
             handleSelectSquare(row, column);
             const avail = findAvailableSqr(sqr, piece, color, row, column);
-            console.log("Available moves:", avail);
             setAvailableSqr(avail);
             addAvailableStyle();
         } else {
@@ -163,7 +156,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         }
     }
      else if (counter % 2 !== 0) {
-        // This block runs when a piece is selected and a move is being made
+        
         if (color === currentTurn) {
             handleSelectSquare(row, column);
             setAvailableSqr(findAvailableSqr(sqr, piece, color, row, column));
@@ -171,8 +164,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             return false;
         }
          else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
-            console.log("Moving piece...");
-
             if (color !== null) {
                 setHalfMoveClock(0);
                 setCapturedPieceList((prevState) => [
@@ -222,12 +213,8 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
                     isJustMoved: true,
                 };
 
-                console.log('Board state after move:', newSqr);
-
                 return newSqr;
             });
-            console.log("Current turn in move",currentTurn)
-            // Update the turn and move number
             if (currentTurn === "red") {
                 setCurrentTurn("black");
             } else {
@@ -238,14 +225,13 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             // Check if the game is over
             checkGameOver();
 
-            // Reset the counter for the next move
             setCounter(2);
 
             return true;
         } 
         else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
            
-            console.log('Move is not valid, resetting available squares');
+            
             const newSqr = [...sqr];
             for (const s of newSqr) {
                 s.isAvailable = false;
@@ -266,7 +252,6 @@ export function checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver) {
     const pieceList = sqr.filter(
       (p) => p.color === currentTurn && p.piece != null
     );
-    console.log(pieceList);
     const possibleMoveList = [];
     for (const piece of pieceList) {
       const moveList = findAvailableSqr(
@@ -280,7 +265,6 @@ export function checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver) {
         possibleMoveList.push(...moveList);
       }
     }
-    console.log(possibleMoveList, possibleMoveList.length);
     if (possibleMoveList.length === 0) {
       setGameOver(true);
     } else {

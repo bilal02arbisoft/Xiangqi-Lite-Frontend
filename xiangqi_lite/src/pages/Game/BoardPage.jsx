@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import "../css/app.css";
+import "css/app.css";
 import useState from "react-usestateref";
 import axios from 'axios';
-import Board from "../../components/Board/Board";
-import BoardInfo from "../../components/BoardInfo/BoardInfo";
-import { generateFEN, parseFENInput } from '../../utils/FENUtils';
+import Board from "components/Board/Board";
+import BoardInfo from "components/BoardInfo/BoardInfo";
+import { generateFEN, parseFENInput } from 'utils/FENUtils';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { initializeSquares, findAvailableSqr, MovePiece } from '../../utils/GameLogic';
+import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 import { useParams } from 'react-router-dom';
 
 export const BoardContext = React.createContext();
@@ -99,7 +99,6 @@ function BoardPage() {
                     connectToWebSocket(gameData.game_id);
                 }
             } catch (error) {
-                console.error("Error initializing game:", error);
                 setError(true);
             }
         }
@@ -150,7 +149,6 @@ function BoardPage() {
         (currentTurn === "black" && isFlipped);
 
         if (!isPlayerAllowedToMove) {
-        console.log("It's not your turn!");
         return;
      }
         setSqrHistory((prevHistory) => [...prevHistory, latestSqr.current]);
@@ -178,9 +176,6 @@ function BoardPage() {
             setSelectedSquareInfo,
         );
         handleGenerateFEN()
-
-       
-
 
         if (move && latestWs.current && latestWs.current.readyState === WebSocket.OPEN) {
             const message = JSON.stringify({

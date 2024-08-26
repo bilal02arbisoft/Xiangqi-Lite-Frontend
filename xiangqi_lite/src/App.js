@@ -4,7 +4,7 @@ import SignUpPage from 'pages/SigninSignup/SignUpPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProfileEditPage from "pages/Profile/Profile";
 import VerifyOtpPage from 'pages/Profile/VerifyOtp';
-import FriendsPage from 'pages/Friend'
+import FriendsPage from 'pages/Friend/Friend'
 import BoardPage from 'pages/Game/BoardPage';
 
 

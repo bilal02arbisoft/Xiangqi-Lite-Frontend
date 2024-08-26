@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { BoardContext } from "../../pages/BoardPage";
+import { BoardContext } from "pages/Game/BoardPage";
 
 export default function FENGenerator() {
   const [showFEN, setShowFEN] = useState(false);

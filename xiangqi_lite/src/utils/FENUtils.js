@@ -1,4 +1,4 @@
-import { identifyPiece, identifyColor } from "./PieceUtils";
+import { identifyPiece, identifyColor } from "utils/PieceUtils";
 
 export const parseFENInput = (
     FEN,
@@ -42,8 +42,8 @@ export const parseFENInput = (
     });
   
     isFlipped ? setSqr(newSqr.reverse()) : setSqr(newSqr);
-    // setCurrentTurn(turnOrder === "r" ? "red" : "black");
-    console.log("Turn order",turnOrder)
+    
+   
     setCounter(0);
   };
   
