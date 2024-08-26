@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import "../css/app.css";
 import useState from "react-usestateref";
 import axios from 'axios';
-import Board from "../components/Board/Board";
-import BoardInfo from "../components/BoardInfo/BoardInfo";
-import { generateFEN, parseFENInput } from '../utils/FENUtils';
+import Board from "../../components/Board/Board";
+import BoardInfo from "../../components/BoardInfo/BoardInfo";
+import { generateFEN, parseFENInput } from '../../utils/FENUtils';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { initializeSquares, findAvailableSqr, MovePiece } from '../utils/GameLogic';
+import { initializeSquares, findAvailableSqr, MovePiece } from '../../utils/GameLogic';
 import { useParams } from 'react-router-dom';
 
 export const BoardContext = React.createContext();
@@ -43,9 +43,9 @@ function BoardPage() {
                 const data = JSON.parse(event.data);
 
                 if (data.type === 'player_connected') {
-                    // alert(`${data.message}`);
+                   
                 } else if (data.type === 'player_disconnected') {
-                    // alert(`${data.message}`);
+                    
                 } else if (data.type === 'game_message') {
                     console.log("Game move received:", data);
 
