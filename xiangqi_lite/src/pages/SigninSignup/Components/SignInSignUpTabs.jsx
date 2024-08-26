@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import SignUpForm from './SignupForm';
-import SignInForm from './SigninForm';
+import SignUpForm from 'pages/SigninSignup/Components/SignupForm';
+import SignInForm from 'pages/SigninSignup/Components/SigninForm';
 
 function SignInSignUpTabs() {
   const navigate = useNavigate();

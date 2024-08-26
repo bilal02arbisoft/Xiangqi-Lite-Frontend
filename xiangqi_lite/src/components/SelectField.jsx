@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 function SelectField({ label, name, value, onChange, options, error }) {
   return (
