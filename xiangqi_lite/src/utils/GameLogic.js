@@ -11,7 +11,7 @@ import {
 
   
 export function findAvailableSqr(sqr,piece, color, row, column) {
-    console.log('findAvailableSqr params:', { sqr, piece, color, row, column });
+    // console.log('findAvailableSqr params:', { sqr, piece, color, row, column });
     const newSqr = [...sqr];
     const targetSqr = [];
     const selectSqrById = (id) => newSqr.find((s) => s.id === id);
@@ -123,7 +123,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
   
     return squares;
   };  
-  // chessUtils.js
+  
 
   export function MovePiece(
     piece,
@@ -159,17 +159,18 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             setAvailableSqr(avail);
             addAvailableStyle();
         } else {
-            return;
+            return false;
         }
-    } else if (counter % 2 !== 0) {
+    }
+     else if (counter % 2 !== 0) {
         // This block runs when a piece is selected and a move is being made
         if (color === currentTurn) {
             handleSelectSquare(row, column);
-            console.log("Yahan phasa2");
             setAvailableSqr(findAvailableSqr(sqr, piece, color, row, column));
             addAvailableStyle();
-            return;
-        } else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
+            return false;
+        }
+         else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
             console.log("Moving piece...");
 
             if (color !== null) {
@@ -185,64 +186,48 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             }
 
             // Update the board state
-setSqr((prevState) => {
-    // Create a deep copy of the previous state to avoid mutating it
-    const newSqr = prevState.map((s) => ({ ...s }));
+            setSqr((prevState) => {
+                const newSqr = prevState.map((s) => ({ ...s }));
 
-    const startIndex = newSqr.findIndex(
-        (s) => s.id === `${selectedSquareInfo.row}-${selectedSquareInfo.column}`
-    );
-    const destinationIndex = newSqr.findIndex(
-        (s) => s.id === `${row}-${column}`
-    );
+                const startIndex = newSqr.findIndex(
+                    (s) => s.id === `${selectedSquareInfo.row}-${selectedSquareInfo.column}`
+                );
+                const destinationIndex = newSqr.findIndex(
+                    (s) => s.id === `${row}-${column}`
+                );
 
-    // Update the state of all squares, marking previous moves and resetting availability
-    newSqr.forEach((s, index) => {
-        newSqr[index] = {
-            ...s,
-            isJustMoved: false,
-            isPreviousMoved: false,
-            isAvailable: false,
-        };
-    });
+                // Update the state of all squares
+                newSqr.forEach((s, index) => {
+                    newSqr[index] = {
+                        ...s,
+                        isJustMoved: false,
+                        isPreviousMoved: false,
+                        isAvailable: false,
+                    };
+                });
 
-    // Update the start square (remove piece and mark it as previously moved)
-    newSqr[startIndex] = {
-        ...newSqr[startIndex],
-        piece: null,
-        color: null,
-        isPreviousMoved: true,
-    };
+                // Update the start square
+                newSqr[startIndex] = {
+                    ...newSqr[startIndex],
+                    piece: null,
+                    color: null,
+                    isPreviousMoved: true,
+                };
 
-    // Update the destination square (place the piece and mark it as just moved)
-    newSqr[destinationIndex] = {
-        ...newSqr[destinationIndex],
-        piece: selectedSquareInfo.piece,
-        color: selectedSquareInfo.color,
-        isJustMoved: true,
-    };
+                // Update the destination square
+                newSqr[destinationIndex] = {
+                    ...newSqr[destinationIndex],
+                    piece: selectedSquareInfo.piece,
+                    color: selectedSquareInfo.color,
+                    isJustMoved: true,
+                };
 
-    console.log('Board state after move:', newSqr); // Logging the board state after move
+                console.log('Board state after move:', newSqr);
 
-    return newSqr; // Return the updated state
-});
-
-// Update the turn and move number
-if (currentTurn === "red") {
-    setCurrentTurn("black");
-} else {
-    setCurrentTurn("red");
-    setFullMoveNumber((prev) => prev + 1);
-}
-
-
-checkGameOver();
-
-
-setCounter(2);
-
-console.log('Final board state after processing:', sqr);
-
+                return newSqr;
+            });
+            console.log("Current turn in move",currentTurn)
+            // Update the turn and move number
             if (currentTurn === "red") {
                 setCurrentTurn("black");
             } else {
@@ -255,8 +240,11 @@ console.log('Final board state after processing:', sqr);
 
             // Reset the counter for the next move
             setCounter(2);
-        } else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
-            // Invalid move, reset the available squares
+
+            return true;
+        } 
+        else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
+           
             console.log('Move is not valid, resetting available squares');
             const newSqr = [...sqr];
             for (const s of newSqr) {
@@ -265,13 +253,13 @@ console.log('Final board state after processing:', sqr);
             }
             setSqr(newSqr);
             setAvailableSqr([]);
-            return;
+            return false;
         }
     }
 
-    // Log the final state of sqr after any move processing
-    console.log('Final board state after processing:', sqr);
+    return false;
 }
+
 
  
 export function checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver) {

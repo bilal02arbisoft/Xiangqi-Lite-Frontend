@@ -9,7 +9,7 @@ export const parseFENInput = (
   ) => {
     const splitUpFEN = FEN.trim().split(" ");
     const boardFEN = splitUpFEN[0].split("/");
-    const turnOrder = splitUpFEN[1]; // Expecting "w" or "b" here
+    const turnOrder = splitUpFEN[1]; 
   
     const decodedFEN = boardFEN.map((FENstring) => {
       return FENstring.replace(/9/g, "111111111")
@@ -42,7 +42,8 @@ export const parseFENInput = (
     });
   
     isFlipped ? setSqr(newSqr.reverse()) : setSqr(newSqr);
-    setCurrentTurn(turnOrder === "r" ? "red" : "black");
+    // setCurrentTurn(turnOrder === "r" ? "red" : "black");
+    console.log("Turn order",turnOrder)
     setCounter(0);
   };
   
@@ -63,6 +64,7 @@ export const generateFEN = (setFENOutput, squares, isFlipped, currentTurn) => {
   const turnOrder = currentTurn == "red" ? "r" : "b";
   console.log('currentTurn'+currentTurn)
   setFENOutput(`${FENQuery.join("/")} ${turnOrder}`);
+
 };
 
 const produceFENString = (ary) => {
@@ -78,7 +80,7 @@ const produceFENString = (ary) => {
       let letter;
       if (sqr.piece === "knight") {
         letter = "n";
-      } else {
+      } else if (sqr.piece!=null) {
         letter = sqr.piece.split("")[0];
       }
       FENQuery.push(sqr.color === "red" ? letter.toUpperCase() : letter);
