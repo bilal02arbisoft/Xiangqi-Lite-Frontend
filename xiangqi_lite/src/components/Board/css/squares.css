@@ -9,8 +9,8 @@ img {
 
 }
 .square {
-  width: 65px;
-  height: 65px;
+  width: 90px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,8 +23,8 @@ img {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 20px; /* Adjust size as needed */
-  height: 20px; /* Adjust size as needed */
+  width: 25px; /* Adjust size as needed */
+  height: 25px; /* Adjust size as needed */
   background-color: #c800ff; /* Blue color for the circle */
   border-radius: 50%; /* Makes it a circle */
   transform: translate(-50%, -50%); /* Centers the circle */
@@ -32,20 +32,12 @@ img {
 }
 
 
-.square__available:hover {
+/* .square__available:hover {
   border: 2px solid hsl(60, 100%, 50%);
+} */
+.square__selected {
+  background: none; /* Remove the existing background gradients */
+  border-radius: 100%; /* Make the shape round */
+  border: 5px solid rgb(233, 150, 0);
 }
 
-/* .square__selected {
-  background: linear-gradient(to right, rgb(24, 74, 3) 2px, transparent 2px) 0 0,
-    linear-gradient(to right, rgb(24, 74, 3) 2px, transparent 2px) 0 100%,
-    linear-gradient(to left, rgb(24, 74, 3) 2px, transparent 2px) 100% 0,
-    linear-gradient(to left, rgb(24, 74, 3) 2px, transparent 2px) 100% 100%,
-    linear-gradient(to bottom, rgb(24, 74, 3) 2px, transparent 2px) 0 0,
-    linear-gradient(to bottom, rgb(24, 74, 3) 2px, transparent 2px) 100% 0,
-    linear-gradient(to top, rgb(24, 74, 3) 2px, transparent 2px) 0 100%,
-    linear-gradient(to top, rgb(24, 74, 3) 2px, transparent 2px) 100% 100%;
-
-  background-repeat: no-repeat;
-  background-size: 10px 10px;
-} */

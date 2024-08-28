@@ -54,7 +54,7 @@ function SignInForm() {
         localStorage.setItem('refresh_token', refresh);
 
         setMessage('Sign in successful!');
-        navigate('/board')
+        navigate('/profile')
       } else {
         const newErrors = {};
         if (result.username) newErrors.username = result.username[0];

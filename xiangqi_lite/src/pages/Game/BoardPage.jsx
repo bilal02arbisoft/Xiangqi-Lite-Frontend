@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "css/app.css";
 import useState from "react-usestateref";
 import axios from 'axios';
@@ -8,21 +8,24 @@ import { generateFEN, parseFENInput } from 'utils/FENUtils';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export const BoardContext = React.createContext();
 
 function BoardPage() {
-    const { game_id } = useParams(); 
-    const [ws, setWs, latestWs] = useState(null);
+    const { game_id: gameIdFromParams } = useParams(); 
+    const navigate = useNavigate();
+    const usernameRef = useRef(null); 
+    const ws = useRef(null);
+    const gameIdRef = useRef(gameIdFromParams); 
     const [sqr, setSqr, latestSqr] = useState(initializeSquares);
-    const [isFlipped, setIsFlipped,latestIsFlipped] = useState(false);
-    const [selectedSquareInfo, setSelectedSquareInfo, latestSelectedSquareInfo] = useState(null);
+    const [isFlipped, setIsFlipped, latestIsFlipped] = useState(false);
+    const [selectedSquareInfo, setSelectedSquareInfo, latestSelectedSquareInfo] = useState();
     const [availableSqr, setAvailableSqr, latestAvailableSqr] = useState([]);
     const [counter, setCounter, latestCounter] = useState(0);
     const [currentTurn, setCurrentTurn, latestCurrentTurn] = useState("red");
     const [capturedPieceList, setCapturedPieceList, latestCapturedPieceList] = useState([]);
-    const [FENOutput, setFENOutput,latestFENOutput] = useState("");
+    const [FENOutput, setFENOutput, latestFENOutput] = useState("");
     const [error, setError] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [halfMoveClock, setHalfMoveClock] = useState(0);
@@ -30,83 +33,108 @@ function BoardPage() {
     const [sqrHistory, setSqrHistory] = useState([initializeSquares()]);
 
     useEffect(() => {
-        async function connectToWebSocket(gameId) {
-            const token = localStorage.getItem('access_token');
-            const socket = new WebSocket(`ws://localhost:8000/ws/game/${gameId}/?token=${token}&game_id=${gameId}`);
-            
-            setWs(socket);
-            latestWs.current.onopen = () => {
-                console.log("WebSocket connection established");
-            };
-
-            latestWs.current.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-
-                if (data.type === 'player_connected') {
-                   
-                } else if (data.type === 'player_disconnected') {
-                    
-                } else if (data.type === 'game_message') {
-                    console.log("Game move received:", data);
-
-                    if (data.fen && data.player!=latestCurrentTurn.current) {
-                         handleParseFENInput(data.fen);
-                         setCurrentTurn(data.player)
-
+        async function fetchUserDetails() {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await axios.get('http://127.0.0.1:8000/api/profile/', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
+                });
+
+                const userData = response.data;
+                usernameRef.current = userData.username;  
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+                setError(true);
+            }
+        }
+
+        async function connectToWebSocket() {
+            const token = localStorage.getItem('access_token');
+            if (ws.current && ws.current.readyState !== WebSocket.CLOSED ) {
+                
+                return;
+            }
+            ws.current = new WebSocket(`ws://localhost:8000/ws/game/?token=${token}`);
+            ws.current.onopen = () => { 
+                if (ws.current.readyState === WebSocket.OPEN && gameIdRef.current) {
+                    ws.current.send(JSON.stringify({
+                        type: 'game.join',
+                        id: gameIdRef.current
+                    }));
                 }
             };
+    
+            ws.current.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+    
+                if (data.type === 'game.start') {
+                    
+                    if (usernameRef.current === data.black_player) {
+                        handleFlipBoard();
+                        setCurrentTurn(data.turn);
 
-            latestWs.current.onclose = () => {
-                console.log("WebSocket connection closed");
+                    } else {
+                        setCurrentTurn(data.turn);
+                    }
+                } else if (data.type === 'game.move') { 
+                    if (data.fen && data.player !== latestCurrentTurn.current) {
+                        handleParseFENInput(data.fen);
+                        setCurrentTurn(data.player);
+                    }
+                } else if (data.type === 'error') {
+                    console.error("Error received:", data.message);
+                }
             };
-
-            latestWs.current.onerror = (error) => {
+    
+            ws.current.onclose = () => {
+                console.log("WebSocket connection closed");
+                ws.current = null; 
+            };
+    
+            ws.current.onerror = (error) => {
                 console.error("WebSocket error:", error);
             };
         }
 
         async function initializeGame() {
+            await fetchUserDetails();
             try {
                 const token = localStorage.getItem('access_token');
-
-                if (game_id) {
-                    const response = await axios.get(`http://127.0.0.1:8000/game/detail/${game_id}/`, {
+                if (gameIdFromParams) {
+                    const response = await axios.get(`http://127.0.0.1:8000/game/detail/${gameIdFromParams}/`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
-
                     const gameData = response.data;
                     setFENOutput(gameData.fen);
-                    setCurrentTurn("red");
                     handleParseFENInput(gameData.fen);
-                    handleFlipBoard()
-                    connectToWebSocket(game_id);
+                    gameIdRef.current = gameIdFromParams;  
+                    connectToWebSocket();
                 } else {
-                
                     const response = await axios.post('http://127.0.0.1:8000/game/create/', null, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
-
                     const gameData = response.data;
                     setFENOutput(gameData.initial_fen);
-                    setCurrentTurn("red");
                     handleParseFENInput(gameData.initial_fen);
-                    
-                    connectToWebSocket(gameData.game_id);
+                    gameIdRef.current = gameData.game_id;  
+                    navigate(`/game/${gameData.game_id}`);  
+    
+                    connectToWebSocket();
                 }
             } catch (error) {
                 setError(true);
             }
         }
-
         initializeGame();
+    }, []);
     
-    }, [game_id]); 
-
+    
     function addAvailableStyle() {
         const newSqr = [...sqr];
         for (const s of newSqr) {
@@ -119,6 +147,7 @@ function BoardPage() {
     }
 
     function handleSelectSquare(row, column) {
+       
         const newSqr = [...sqr];
         const index = newSqr.findIndex((s) => s.id === `${row}-${column}`);
         for (const s of newSqr) {
@@ -143,14 +172,14 @@ function BoardPage() {
     }
 
     function handleMovePiece(piece, color, row, column) {
-
         const isPlayerAllowedToMove = 
-        (currentTurn === "red" && !isFlipped) || 
-        (currentTurn === "black" && isFlipped);
+            (currentTurn === "red" && !isFlipped) || 
+            (currentTurn === "black" && isFlipped);
 
         if (!isPlayerAllowedToMove) {
-        return;
-     }
+            return;
+        }
+
         setSqrHistory((prevHistory) => [...prevHistory, latestSqr.current]);
 
         const move = MovePiece(
@@ -173,18 +202,17 @@ function BoardPage() {
             setCurrentTurn,
             setFullMoveNumber,
             setCounter,
-            setSelectedSquareInfo,
+            setSelectedSquareInfo
         );
-        handleGenerateFEN()
+        handleGenerateFEN();
 
-        if (move && latestWs.current && latestWs.current.readyState === WebSocket.OPEN) {
+        if (move && ws.current && ws.current.readyState === WebSocket.OPEN) {
             const message = JSON.stringify({
-                type: 'move',
+                type: 'game.move',
                 fen: latestFENOutput.current,
                 player: latestCurrentTurn.current
             });
-
-            latestWs.current.send(message);
+            ws.current.send(message);
         }
     }
 
@@ -194,7 +222,6 @@ function BoardPage() {
             const flippedBoard = [...prevState].reverse();
             return flippedBoard;
         });
-        
     }
 
     function handleGenerateFEN() {
@@ -239,7 +266,7 @@ function BoardPage() {
                 <div>
                     <div className={`app__container ${error ? "disabled" : ""}`}>
                         <Board squares={sqr} />
-                        <BoardInfo />
+                        {/* <BoardInfo /> */}
                     </div>
                 </div>
             </BoardContext.Provider>

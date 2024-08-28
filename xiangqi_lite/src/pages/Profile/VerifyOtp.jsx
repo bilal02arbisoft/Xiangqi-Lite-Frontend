@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const VerifyOtpPage = () => {
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();  // Use useNavigate instead of useHistory
+  const navigate = useNavigate(); 
 
   const handleOtpSubmit = (e) => {
     e.preventDefault();
@@ -18,8 +18,8 @@ const VerifyOtpPage = () => {
     })
       .then(response => {
         setMessage('Email verified successfully!');
-        // Redirect back to profile page after successful verification
-        navigate('/profile');  // Use navigate instead of history.push
+    
+        navigate('/profile'); 
       })
       .catch(error => {
         setMessage('Error verifying OTP. Please try again.');

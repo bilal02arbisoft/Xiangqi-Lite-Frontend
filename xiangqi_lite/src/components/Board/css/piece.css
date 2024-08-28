@@ -1,6 +1,6 @@
 .piece {
-  width: 55px; /* Adjust to better fit the square */
-  height: 55px; /* Adjust to better fit the square */
+  width: 65px; /* Adjust to better fit the square */
+  height: 65px; /* Adjust to better fit the square */
   border-radius: 70%;
   box-shadow: rgba(0, 0, 0, 0.1) 4px 4px 5px, 
               rgba(255, 255, 255, 0.3) 0px 4px 2px 0px inset, 
