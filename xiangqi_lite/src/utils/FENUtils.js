@@ -62,7 +62,6 @@ export const generateFEN = (setFENOutput, squares, isFlipped, currentTurn) => {
     FENQuery.push(row.join(""));
   }
   const turnOrder = currentTurn == "red" ? "r" : "b";
-  console.log('currentTurn'+currentTurn)
   setFENOutput(`${FENQuery.join("/")} ${turnOrder}`);
 
 };

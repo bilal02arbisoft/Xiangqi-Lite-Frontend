@@ -3,10 +3,10 @@
     margin-bottom: 120px;
     margin-left: 0px;
     display: grid;
-    grid-template-columns: repeat(9,90px); /* Match square size */
-    grid-template-rows: repeat(10, 90px); /* Match square size */
-    width: 810px; /* Adjusted width to match 9 columns of 65px */
-    height: 900px; /* Adjusted height to match 10 rows of 65px */
+    grid-template-columns: repeat(9,80px); 
+    grid-template-rows: repeat(10, 80px); 
+    width: 720px; 
+    height: 800px; 
     background: url(../../../images/xiangqi_gmchess_wood.svg);
     background-size: contain;
     background-repeat: no-repeat;

@@ -1,0 +1,71 @@
+@import-normalize;
+@import "fonts.css";
+@import "buttons.css";
+@import "../components/Board/css/squares.css";
+@import "../components/Board/css/board.css";
+@import "../components/BoardInfo/css/board-info.css";
+@import "../components/BoardInfo/css/captured-piece.css";
+@import "../components/BoardInfo/css/FEN-generator.css";
+@import "../components/Board/css/piece.css";
+
+
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+* {
+  font-family: Ubuntu;
+}
+h1 {
+  border-radius: 5px;
+  padding: 10px 40px;
+  font-weight: bold;
+  font-size: 35px;
+}
+.red {
+  background-color: hsl(9.18, 95.51%, 34.9%);
+}
+.black {
+  background-color: hsl(46.67, 13.85%, 12.75%);
+}
+
+.app__container {
+  padding: 10px;
+  margin-left: 300px;
+} 
+
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background-image: 
+    url('https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/light-bg.svg'), 
+    url('https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/light-soldiers.svg');
+    background-color: rgb(255, 251, 242);
+    background-position: center center, bottom center;
+  background-size: cover, contain;
+  background-repeat: no-repeat, no-repeat;
+  overflow: hidden;
+}
+.timer-container {
+  display: flex;
+  justify-content: space-between; /* or adjust as needed */
+  margin-bottom: 20px;
+  gap: 10px; /* space between the timers */
+}
+
+.timer-red {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: red; /* Red color for the red player */
+}
+
+.timer-black {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black; /* Black color for the black player */
+  margin-right: 600px;
+}

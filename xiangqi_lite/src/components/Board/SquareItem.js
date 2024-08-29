@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { useDrop } from 'react-dnd';
 import { BoardContext } from "pages/Game/BoardPage";
 import Piece from "components/Board/Piece";
+import useState from "react-usestateref";
+
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -26,7 +28,8 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default function SquareItem({ square }) {
+export default function SquareItem({ square })
+ {
   const { handleMovePiece } = useContext(BoardContext);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "PIECE",
@@ -49,7 +52,7 @@ export default function SquareItem({ square }) {
     <div
       ref={drop}
       className={`square ${square.isAvailable ? "square__available" : ""} 
-        ${square.isSelected || square.isJustMoved || square.isPreviousMoved ? "square__selected" : ""}
+        ${square.isSelected  ? "square__selected" : ""}
         ${isOver ? "square__highlight" : ""}`}
       data-row={square.row}
       data-column={square.column}

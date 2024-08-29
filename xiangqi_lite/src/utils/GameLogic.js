@@ -119,8 +119,18 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
   
     return squares;
   };  
+
   
 
+  function convertToUCI(row, column) {
+    // Convert numerical row and column to UCI notation
+    const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','i'];
+    const uciColumn = columnLetters[column - 1]; // Column is assumed to be 1-based
+    const uciRow = row.toString(); // Row is already in string format
+  
+    return uciColumn + uciRow;
+  }
+  
   export function MovePiece(
     piece,
     color,
@@ -140,111 +150,115 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     setSqr,
     setCurrentTurn,
     setFullMoveNumber,
-    checkGameOver,
+    setGameOver,
     setCounter,
-) {
-   
+    setSelectedSquareInfo,
+    moveplayed
+
+  ) {
     if (counter % 2 === 0) {
-       
-        if (color === currentTurn) {
-            handleSelectSquare(row, column);
-            const avail = findAvailableSqr(sqr, piece, color, row, column);
-            setAvailableSqr(avail);
-            addAvailableStyle();
+      if (color === currentTurn) {
+        handleSelectSquare(row, column);
+        const avail = findAvailableSqr(sqr, piece, color, row, column);
+        setAvailableSqr(avail);
+        addAvailableStyle();
+      } else {
+        return false;
+      }
+    } else if (counter % 2 !== 0) {
+      if (color === currentTurn) {
+        handleSelectSquare(row, column);
+        setAvailableSqr(findAvailableSqr(sqr, piece, color, row, column));
+        addAvailableStyle();
+        return false;
+      } else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
+        // Generate UCI move notation
+        const startUCI = convertToUCI(selectedSquareInfo.row, selectedSquareInfo.column);
+        const endUCI = convertToUCI(row, column);
+        const uciMove = startUCI + endUCI;
+  
+        // Log the UCI move
+        console.log(`Move played: ${uciMove}`);
+        moveplayed.current = uciMove
+  
+        if (color !== null) {
+          setHalfMoveClock(0);
+          setCapturedPieceList((prevState) => [
+            ...prevState,
+            sqr.find((s) => s.id === `${row}-${column}`),
+          ]);
+        } else if (piece === "pawn") {
+          setHalfMoveClock(0);
         } else {
-            return false;
+          setHalfMoveClock((prev) => prev + 1);
         }
+  
+        // Update the board state
+        setSqr((prevState) => {
+          const newSqr = prevState.map((s) => ({ ...s }));
+  
+          const startIndex = newSqr.findIndex(
+            (s) => s.id === `${selectedSquareInfo.row}-${selectedSquareInfo.column}`
+          );
+          const destinationIndex = newSqr.findIndex(
+            (s) => s.id === `${row}-${column}`
+          );
+  
+          // Update the state of all squares
+          newSqr.forEach((s, index) => {
+            newSqr[index] = {
+              ...s,
+              isJustMoved: false,
+              isPreviousMoved: false,
+              isAvailable: false,
+            };
+          });
+  
+          // Update the start square
+          newSqr[startIndex] = {
+            ...newSqr[startIndex],
+            piece: null,
+            color: null,
+            isPreviousMoved: false,
+            isSelected: false
+          };
+  
+          // Update the destination square
+          newSqr[destinationIndex] = {
+            ...newSqr[destinationIndex],
+            piece: selectedSquareInfo.piece,
+            color: selectedSquareInfo.color,
+            isJustMoved: true,
+          };
+  
+          return newSqr;
+        });
+  
+        if (currentTurn === "red") {
+          setCurrentTurn("black");
+        } else {
+          setCurrentTurn("red");
+          setFullMoveNumber((prev) => prev + 1);
+        }
+       
+        setCounter(2);
+        checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver)
+        return true;
+      } else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
+        const newSqr = [...sqr];
+        for (const s of newSqr) {
+          s.isAvailable = false;
+          s.isSelected = false;
+        }
+        setSqr(newSqr);
+        setAvailableSqr([]);
+        return false;
+      }
     }
-     else if (counter % 2 !== 0) {
-        
-        if (color === currentTurn) {
-            handleSelectSquare(row, column);
-            setAvailableSqr(findAvailableSqr(sqr, piece, color, row, column));
-            addAvailableStyle();
-            return false;
-        }
-         else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
-            if (color !== null) {
-                setHalfMoveClock(0);
-                setCapturedPieceList((prevState) => [
-                    ...prevState,
-                    sqr.find((s) => s.id === `${row}-${column}`),
-                ]);
-            } else if (piece === "pawn") {
-                setHalfMoveClock(0);
-            } else {
-                setHalfMoveClock((prev) => prev + 1);
-            }
-
-            // Update the board state
-            setSqr((prevState) => {
-                const newSqr = prevState.map((s) => ({ ...s }));
-
-                const startIndex = newSqr.findIndex(
-                    (s) => s.id === `${selectedSquareInfo.row}-${selectedSquareInfo.column}`
-                );
-                const destinationIndex = newSqr.findIndex(
-                    (s) => s.id === `${row}-${column}`
-                );
-
-                // Update the state of all squares
-                newSqr.forEach((s, index) => {
-                    newSqr[index] = {
-                        ...s,
-                        isJustMoved: false,
-                        isPreviousMoved: false,
-                        isAvailable: false,
-                    };
-                });
-
-                // Update the start square
-                newSqr[startIndex] = {
-                    ...newSqr[startIndex],
-                    piece: null,
-                    color: null,
-                    isPreviousMoved: true,
-                };
-
-                // Update the destination square
-                newSqr[destinationIndex] = {
-                    ...newSqr[destinationIndex],
-                    piece: selectedSquareInfo.piece,
-                    color: selectedSquareInfo.color,
-                    isJustMoved: true,
-                };
-
-                return newSqr;
-            });
-            if (currentTurn === "red") {
-                setCurrentTurn("black");
-            } else {
-                setCurrentTurn("red");
-                setFullMoveNumber((prev) => prev + 1);
-            }
-
-            // Check if the game is over
-            checkGameOver();
-
-            setCounter(2);
-
-            return true;
-        } 
-        else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
-           
-            
-            const newSqr = [...sqr];
-            for (const s of newSqr) {
-                s.isAvailable = false;
-                s.isSelected = false;
-            }
-            setSqr(newSqr);
-            setAvailableSqr([]);
-            return false;
-        }
-    }
-
+  
     return false;
-}
+  }
+  
 
 
  

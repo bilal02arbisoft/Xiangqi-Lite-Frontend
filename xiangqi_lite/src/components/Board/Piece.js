@@ -4,8 +4,6 @@ import { useDrag } from 'react-dnd';
 
 export default function Piece({ pieceInfo, square }) {
 
-
-
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "PIECE",
     item: () => {
@@ -21,9 +19,7 @@ export default function Piece({ pieceInfo, square }) {
       isDragging: monitor.isDragging(),
     }),
   }));
-
   const backgroundColor = pieceInfo.color === "red" ? "rgb(222, 34, 24)" : "rgb(0, 0, 0)";
-
   return (
     <div
       className="piece"

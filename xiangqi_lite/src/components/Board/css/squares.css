@@ -9,8 +9,8 @@ img {
 
 }
 .square {
-  width: 90px;
-  height: 90px;
+  width:80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,21 +23,19 @@ img {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 25px; /* Adjust size as needed */
-  height: 25px; /* Adjust size as needed */
-  background-color: #c800ff; /* Blue color for the circle */
-  border-radius: 50%; /* Makes it a circle */
-  transform: translate(-50%, -50%); /* Centers the circle */
-  pointer-events: none; /* Allows clicks to pass through */
+  width: 25px; 
+  height: 25px; 
+  background-color: #c800ff; 
+  border-radius: 50%; 
+  transform: translate(-50%, -50%); 
+  pointer-events: none; 
 }
 
 
-/* .square__available:hover {
-  border: 2px solid hsl(60, 100%, 50%);
-} */
+
 .square__selected {
-  background: none; /* Remove the existing background gradients */
-  border-radius: 100%; /* Make the shape round */
-  border: 5px solid rgb(233, 150, 0);
+  background: none; 
+  border-radius: 100%; 
+  border: 6px solid rgb(245, 168, 23);
 }
 
