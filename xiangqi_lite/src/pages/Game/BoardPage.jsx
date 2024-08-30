@@ -9,8 +9,10 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGameTimer } from 'pages/Game/Timer';
+import MoveHistory from "pages/Game/MoveHistory";
 import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/WebsocketHandler'; 
 import WebSocketManager from  'utils/useWebSocket';
+import GameTabs from 'pages/Game/GameTab';
 export const BoardContext = React.createContext();
 
 function BoardPage() {
@@ -35,6 +37,10 @@ function BoardPage() {
     const [serverTime, setServerTime] = useState(Date.now());
     const [turnStartTime, setTurnStartTime] = useState(null); 
     const wsManagerRef = useRef(null); 
+    const [moveHistory, setMoveHistory,latestMoveHisotry] = useState([]); 
+    const [fenHistory, setFenHistory] = useState([]); 
+
+    
     const {
         redTimeRemaining,
         setRedTimeRemaining,
@@ -43,6 +49,17 @@ function BoardPage() {
         setIsRedTimerRunning,
         setIsBlackTimerRunning
     } = useGameTimer(600, 600);
+
+    function updateMoveHistory(player, move) {
+        setMoveHistory((prevHistory) => {
+            const newHistory = [...prevHistory];
+            console.log("move which i'm updating",move)
+            
+                newHistory.push(move); 
+            
+            return newHistory;
+        });
+    }
 
     const webSocketProps = {
         setRedTimeRemaining,
@@ -57,6 +74,9 @@ function BoardPage() {
         setError, 
         usernameRef,
         latestCurrentTurn, 
+        updateMoveHistory,
+        moveHistory
+
     };
 
 
@@ -162,6 +182,7 @@ function BoardPage() {
         }
         setSqr(newSqr);
     }
+   
 
     function handleSelectSquare(row, column) {
         const newSqr = [...sqr];
@@ -246,8 +267,24 @@ function BoardPage() {
                 setIsBlackTimerRunning(false);
                 setIsRedTimerRunning(true);
             }
+            updateMoveHistory(currentTurn, moveplayed.current);
+        
         }
     }
+    function handleUndo() {
+        if (moveHistory.length > 0 && fenHistory.length > 1) { // Ensure there are moves to undo
+            const newMoveHistory = moveHistory.slice(0, -1); // Remove last move
+            const newFenHistory = fenHistory.slice(0, -1); // Remove last FEN
+    
+            setMoveHistory(newMoveHistory);
+            setFenHistory(newFenHistory);
+    
+            const previousFEN = newFenHistory[newFenHistory.length - 1];
+            handleParseFENInput(previousFEN); // Revert to the previous board state
+        }
+    }
+
+    
 
     function handleFlipBoard() {
         setIsFlipped(true);
@@ -294,21 +331,32 @@ function BoardPage() {
                     handleOpenErrorModal,
                     findAvailableSqr,
                     handleSelectSquare,
+                    moveHistory
                 }}
             >
-                 <div>
-                    <div className={`app__container ${error ? "disabled" : ""}`}>
-                        <div className="timer-container">
-                            <div className="timer-red">
-                                <p>Red Player: {Math.floor(redTimeRemaining / 60)}:{redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}</p>
-                            </div>
-                            <div className="timer-black">
-                                <p>Black Player: {Math.floor(blackTimeRemaining / 60)}:{blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}</p>
-                            </div> 
+                 <div className="app__container">
+                <div className={`board-container ${error ? "disabled" : ""}`}>
+                    <Board squares={sqr} />
+                </div>
+                <div className="side-container">
+                    <div className={`timer-container ${!isFlipped ? 'timer-container-top' : 'timer-container-bottom'}`}>
+                        {/* Opponent's timer */}
+                        <div className={!isFlipped ? "timer-black" : "timer-red"}>
+                            <p>{!isFlipped ? `Black Player: ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}` : `Red Player: ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}`}</p>
+                         {/* {console.log(isFlipped)} */}
                         </div>
-                        <Board squares={sqr} />
+                    </div>
+                    <div className="tabs-container">
+                        <GameTabs/>
+                    </div>
+                    <div className={`timer-container ${!isFlipped ? 'timer-container-bottom' : 'timer-container-top'}`}>
+                        
+                        <div className={!isFlipped ? "timer-red" : "timer-black"}>
+                            <p>{!isFlipped ? `Red Player: ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}` : `Black Player: ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}`}</p>
+                        </div>
                     </div>
                 </div>
+            </div>
             </BoardContext.Provider>
         </DndProvider>
     );

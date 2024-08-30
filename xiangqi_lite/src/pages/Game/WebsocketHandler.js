@@ -21,6 +21,8 @@ export const handleWebSocketMessage = (data, props) => {
         setError,
         usernameRef,
         latestCurrentTurn,
+        updateMoveHistory,
+        moveHistory
     } = props;
 
     switch (data.type) {
@@ -33,7 +35,7 @@ export const handleWebSocketMessage = (data, props) => {
             setIsBlackTimerRunning(false);
             setTurnStartTime(Date.now());
 
-            if (usernameRef.current === data.black_player) {
+            if ( usernameRef.current === data.black_player) {
                 handleFlipBoard();
             }
             break;
@@ -44,6 +46,10 @@ export const handleWebSocketMessage = (data, props) => {
                 setRedTimeRemaining(data.red_time_remaining);
                 setBlackTimeRemaining(data.black_time_remaining);
                 setServerTime(data.server_time * 1000);
+                updateMoveHistory(data.player, data.move);
+                console.log("Move history",moveHistory)
+                
+
 
                 if (data.player === 'red') {
                     setIsRedTimerRunning(true);
