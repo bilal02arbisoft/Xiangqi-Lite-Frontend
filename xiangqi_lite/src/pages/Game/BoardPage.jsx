@@ -10,7 +10,7 @@ import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic'
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGameTimer } from 'pages/Game/Timer';
 import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/WebsocketHandler'; 
-import WebSocketManager from  'hooks/useWebSocket';
+import WebSocketManager from  'utils/useWebSocket';
 export const BoardContext = React.createContext();
 
 function BoardPage() {
@@ -94,6 +94,24 @@ function BoardPage() {
                     handleParseFENInput(gameData.fen);
                     setCurrentTurn(gameData.turn)
                     gameIdRef.current = gameIdFromParams;  
+                    if (usernameRef.current === gameData.black_player) {
+                        handleFlipBoard(); 
+                    }
+                   
+                        setRedTimeRemaining(gameData.red_time_remaining);
+                        setBlackTimeRemaining(gameData.black_time_remaining);
+        
+                        if (gameData.turn === 'red') {
+                            setIsRedTimerRunning(true);
+                            setIsBlackTimerRunning(false);
+                            setTurnStartTime(Date.now());
+                        } else {
+                            setIsRedTimerRunning(false);
+                            setIsBlackTimerRunning(true);
+                            setTurnStartTime(Date.now());
+                        }
+
+
                     
                 } else {
                     const response = await axios.post('http://127.0.0.1:8000/game/create/', null, {
@@ -115,7 +133,7 @@ function BoardPage() {
         useEffect(() => {
             initializeGame().then(() => {
                 const token = localStorage.getItem('access_token');
-                wsManagerRef.current = new WebSocketManager(
+                wsManagerRef.current = WebSocketManager.getInstance(
                     'ws://localhost:8000/ws/game/',
                     token,
                     ws => handleWebSocketOpen(ws, gameIdRef),
@@ -223,8 +241,10 @@ function BoardPage() {
 
             if (currentTurn === 'red') {
                 setIsRedTimerRunning(false);
+                setIsBlackTimerRunning(true);
             } else {
                 setIsBlackTimerRunning(false);
+                setIsRedTimerRunning(true);
             }
         }
     }

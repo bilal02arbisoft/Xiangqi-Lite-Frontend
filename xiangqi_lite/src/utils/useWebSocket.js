@@ -1,5 +1,9 @@
 class WebSocketManager {
     constructor(url, token, onOpenCallback, onMessageCallback, onCloseCallback, onErrorCallback) {
+      if (WebSocketManager.instance) {
+        return WebSocketManager.instance;
+      }
+  
       this.url = `${url}?token=${token}`;
       this.onOpenCallback = onOpenCallback;
       this.onMessageCallback = onMessageCallback;
@@ -8,11 +12,13 @@ class WebSocketManager {
       this.ws = null;
       this.isConnected = false;
       this.error = null;
+  
+      WebSocketManager.instance = this;
     }
   
     connect() {
       if (this.ws && this.ws.readyState !== WebSocket.CLOSED) {
-        return; // Prevents multiple connections
+        return;
       }
   
       this.ws = new WebSocket(this.url);
@@ -57,5 +63,18 @@ class WebSocketManager {
     }
   }
   
-  export default WebSocketManager;
+  const singletonWebSocketManager = (function () {
+    let instance;
+  
+    return {
+      getInstance: function (url, token, onOpenCallback, onMessageCallback, onCloseCallback, onErrorCallback) {
+        if (!instance) {
+          instance = new WebSocketManager(url, token, onOpenCallback, onMessageCallback, onCloseCallback, onErrorCallback);
+        }
+        return instance;
+      }
+    };
+  })();
+  
+  export default singletonWebSocketManager;
   
