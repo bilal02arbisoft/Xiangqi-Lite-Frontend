@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from 'auth/AuthProvider';
+import { useAuth } from 'auth/useAuth';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
