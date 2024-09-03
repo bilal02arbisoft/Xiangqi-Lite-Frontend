@@ -2,11 +2,11 @@ import React, { useState,useContext} from 'react';
 import MoveHistory from 'pages/Game/components/MoveHistory';
 import { BoardContext }  from "pages/Game/BoardPage";
 import Chat from './Chat';
+import Viewers from 'pages/Game/components/Viewers';
 
 
 
-const Moves = () => <div></div>;
-const Viewers = () => <div></div>;
+
 
 function TabPanel({ children }) {
     return <div className="tab-content">{children}</div>;
@@ -14,6 +14,7 @@ function TabPanel({ children }) {
 
  export default function GameTabs() {
     const {moveHistory} = useContext(BoardContext);
+    const {viewers} = useContext(BoardContext);
     const [activeTab, setActiveTab] = useState('chat');
 
     return (
@@ -35,7 +36,7 @@ function TabPanel({ children }) {
             <TabPanel>
                 {activeTab === 'chat' && <Chat />}
                 {activeTab === 'moves' && <MoveHistory moveHistory={moveHistory} />}
-                {activeTab === 'viewers' && <Viewers />}
+                {activeTab === 'viewers' && <Viewers viewers={viewers} />}
             </TabPanel>
         </div>
     );

@@ -1,12 +1,12 @@
 import React from 'react';
 
-const PlayerCard = ({ player, color }) => {
+const PlayerCard = ({ player}) => {
   if (!player) return null; 
 
   return (
-    <div className={`player-card player-${color}`}>
+    <div className={`player-card`}>
       <div className="player-info-row"> 
-      <h3 className={color === 'red' ? 'red-text' : 'black-text'}>
+      <h3 >
           {player.username} ({player.rating})
         </h3>
         <img 

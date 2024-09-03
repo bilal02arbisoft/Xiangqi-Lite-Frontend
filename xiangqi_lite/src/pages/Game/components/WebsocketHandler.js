@@ -40,14 +40,13 @@ export const handleWebSocketMessage = (data, props) => {
         setShowOverlay,
         setShowCountdown, 
         setIsCountdownActive,
+        setViewers,
+        setGamePlayer
     } = props;
 
     switch (data.type) {
         case 'game.start':
-
-            
             setTurnStartTime(Date.now());
-
             if ( usernameRef.current === data.black_player) {
                 handleFlipBoard();
             }
@@ -63,11 +62,7 @@ export const handleWebSocketMessage = (data, props) => {
                 setBlackTimeRemaining(data.black_time_remaining);
                 setServerTime(data.server_time * 1000);
                 updateMoveHistory(data.player, data.move);
-                
                 setTurnStartTime(Date.now());
-                
-
-
                 if (data.player === 'red') {
                     setIsRedTimerRunning(true);
                     setIsBlackTimerRunning(false);
@@ -88,11 +83,7 @@ export const handleWebSocketMessage = (data, props) => {
         case 'game.chat':
             data.isSent = 'received'
             const utcDate = new Date(data.timestamp);
-
-    
             const localDateString = utcDate.toLocaleString(); 
-
-    
             data.timestamp = localDateString;
             console.log("data to update",data)
             
@@ -101,7 +92,29 @@ export const handleWebSocketMessage = (data, props) => {
         case 'game.users.list':
             handleUserListData(data.data)
             break;
-
+        
+        case 'game.viewer.joined':
+            setViewers((prevViewers) => [...prevViewers, data.data]);
+            console.log("My username",usernameRef.current)
+            console.log("Revied username",data.data.username)
+            setShowOverlay(false)
+            if ( usernameRef.current === data.data.username) {
+                setIsGameReady(true);
+                setGamePlayer(false) ;
+                if (latestCurrentTurn.current === 'red') {
+                    setIsRedTimerRunning(true);
+                    setIsBlackTimerRunning(false);
+        
+                    
+                } else {
+                    setIsRedTimerRunning(false);
+                    setIsBlackTimerRunning(true);
+                    
+                }  
+            }
+           
+          
+            break;
         case 'error':
             setError(true);
             console.error("Error received:", data.message);

@@ -9,13 +9,13 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGameTimer } from 'pages/Game/components/Timer';
-import MoveHistory from "pages/Game/components/MoveHistory";
 import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/components/WebsocketHandler'; 
 import WebSocketManager from  'utils/useWebSocket';
 import GameTabs from 'pages/Game/components/GameTab';
-import PlayerCard from "pages/Game/components/PlayerCard";
 import OverlayComponent from 'pages/Game/components/Overlay';
+import PlayerTimer from  'pages/Game/components/PlayerTimer'
 export const BoardContext = React.createContext();
+
 
 function BoardPage() {
     const { game_id: gameIdFromParams } = useParams(); 
@@ -49,6 +49,8 @@ function BoardPage() {
     const [countdown, setCountdown] = useState(5);
     const [isCountdownActive, setIsCountdownActive] = useState(false);
     const [showCountdown, setShowCountdown] = useState(false);
+    const [viewers, setViewers] = useState([]);
+    const [gameplayer,setGamePlayer] = useState(true);
 
     const updateChatMessages = (chatMessage) => {
         setChatMessages(prevMessages => [...prevMessages, chatMessage]);
@@ -117,7 +119,9 @@ function BoardPage() {
         setIsGameReady,
         setShowOverlay,
         setShowCountdown,
-        setIsCountdownActive
+        setIsCountdownActive,
+        setViewers,
+        setGamePlayer
     
     };
 
@@ -247,8 +251,8 @@ function BoardPage() {
 
     function handleMovePiece(piece, color, row, column) {
         const isPlayerAllowedToMove = 
-            (currentTurn === "red" && !isFlipped) || 
-            (currentTurn === "black" && isFlipped);
+        (gameplayer && ((currentTurn === "red" && !isFlipped) ||
+         (currentTurn === "black" && isFlipped)));
 
         if (!isPlayerAllowedToMove) {
             return;
@@ -374,61 +378,46 @@ function BoardPage() {
                     updateChatMessages,
                     chatMessages,
                     setChatMessages,
-                    latestIsFlipped
+                    latestIsFlipped,
+                    viewers
                 }}
             >
-                <div className="app__container">
-                
-                <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
-                <OverlayComponent
-                gameId={gameIdRef.current}
-                isVisible={showOverlay}
-                onClose={() => setShowOverlay(false)}
-                countdown={countdown}
-                showCountdown={showCountdown}
-            />
-        <Board squares={sqr} />
-    </div>
-
-    <div className="side-container">
-        <div className={`player-timer-row ${!isFlipped ? 'row-top' : 'row-bottom'}`}>
-            
-            <div className={`timer-container ${!isFlipped ? 'timer-container-top' : 'timer-container-bottom'}`}>
-                <div className={!isFlipped ? 'timer-black' : 'timer-red'}>
-                    <p>
-                        {!isFlipped
-                            ? `Game Time : ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}`
-                            : `Game Time : ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}`}
-                    </p>
-                </div>
-            </div>
-            <PlayerCard player={isFlipped ? redPlayer : blackPlayer} color={isFlipped ? 'red' : 'black'} />
+    <div className="app__container">
+        <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
+          <OverlayComponent
+            gameId={gameIdRef.current}
+            isVisible={showOverlay}
+            onClose={() => setShowOverlay(false)}
+            countdown={countdown}
+            showCountdown={showCountdown}
+          />
+          <Board squares={sqr} />
         </div>
-        
-        
-        <div className="combined-section">
+
+        <div className="side-container">
+          <PlayerTimer
+            isFlipped={isFlipped}
+            blackTimeRemaining={blackTimeRemaining}
+            redTimeRemaining={redTimeRemaining}
+            redPlayer={redPlayer}
+            blackPlayer={blackPlayer}
+          />
+
+          <div className="combined-section">
             <div className="tabs-container">
-                <GameTabs />
+              <GameTabs />
             </div>
 
-           
-            <div className={`player-timer-row ${!isFlipped ? 'row-bottom' : 'row-top'}`}>
-                
-                <div className={`timer-container ${!isFlipped ? 'timer-container-bottom' : 'timer-container-top'}`}>
-                    <div className={!isFlipped ? 'timer-red' : 'timer-black'}>
-                        <p>
-                            {!isFlipped
-                                ? `Game Time: ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}`
-                                : `Game Time: ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}`}
-                        </p>
-                    </div>
-                </div>
-                <PlayerCard player={isFlipped ? blackPlayer : redPlayer} color={isFlipped ? 'black' : 'red'} />
-            </div>
+            <PlayerTimer
+              isFlipped={!isFlipped}
+              blackTimeRemaining={blackTimeRemaining}
+              redTimeRemaining={redTimeRemaining}
+              redPlayer={redPlayer}
+              blackPlayer={blackPlayer}
+            />
+          </div>
         </div>
-        
-    </div>
-</div>
+      </div>
             </BoardContext.Provider>
         </DndProvider>
     );

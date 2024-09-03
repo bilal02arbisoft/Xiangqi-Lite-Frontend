@@ -69,6 +69,11 @@ body, html {
   padding: 0; 
  
 }
+.player-timer-row.bottom {
+  
+  border-top: 1px solid black;
+}
+
 
 .timer-red, .timer-black {
   font-size: 1.5rem;
@@ -117,6 +122,7 @@ body, html {
   justify-content: space-between;
   gap: 20px; 
   height:100%;
+  margin-bottom: 20px;
 }
 
 .tab-menu {
@@ -242,3 +248,8 @@ body, html {
 .board.blurred {
   filter: blur(2px);
 }
+.viewers-tab{
+  margin-top: 10px;
+  margin-left: 450px;
+}
+
