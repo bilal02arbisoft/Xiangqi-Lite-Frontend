@@ -1,9 +1,19 @@
 export const handleWebSocketOpen = (ws, gameIdRef) => {
-    if (ws.readyState === WebSocket.OPEN && gameIdRef.current) {
+    
+    if (ws && ws.readyState === WebSocket.OPEN && gameIdRef.current) {
         ws.send(JSON.stringify({
             type: 'game.join',
             id: gameIdRef.current,
         }));
+        ws.send(JSON.stringify({
+            type: 'game.get',
+            id: gameIdRef.current,
+        }));
+
+    } else {
+        
+        console.log('WebSocket state:', ws ? ws.readyState : 'ws is null');
+
     }
 };
 
@@ -22,22 +32,28 @@ export const handleWebSocketMessage = (data, props) => {
         usernameRef,
         latestCurrentTurn,
         updateMoveHistory,
-        moveHistory
+        moveHistory,
+        updateChatMessages,
+        handleGameGetSuccess,
+        handleUserListData,
+        setIsGameReady,
+        setShowOverlay,
+        setShowCountdown, 
+        setIsCountdownActive,
     } = props;
 
     switch (data.type) {
         case 'game.start':
-            setRedTimeRemaining(data.red_time_remaining);
-            setBlackTimeRemaining(data.black_time_remaining);
-            setServerTime(data.server_time * 1000);
 
-            setIsRedTimerRunning(true);
-            setIsBlackTimerRunning(false);
+            
             setTurnStartTime(Date.now());
 
             if ( usernameRef.current === data.black_player) {
                 handleFlipBoard();
             }
+            setIsGameReady(true);
+            setShowCountdown(true); 
+            setIsCountdownActive(true);
             break;
         case 'game.move':
             if (data.fen && data.player !== latestCurrentTurn.current) {
@@ -62,6 +78,28 @@ export const handleWebSocketMessage = (data, props) => {
                 }
             }
             break;
+
+        case 'game.get.success':
+            handleGameGetSuccess(data.data)
+            break;
+
+        case 'game.chat':
+            data.isSent = 'received'
+            const utcDate = new Date(data.timestamp);
+
+    
+            const localDateString = utcDate.toLocaleString(); 
+
+    
+            data.timestamp = localDateString;
+            console.log("data to update",data)
+            
+            updateChatMessages(data);
+            break;
+        case 'game.users.list':
+            handleUserListData(data.data)
+            break;
+
         case 'error':
             setError(true);
             console.error("Error received:", data.message);

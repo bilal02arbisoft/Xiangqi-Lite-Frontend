@@ -1,0 +1,42 @@
+.overlay-component .modal p {
+    word-wrap: break-word; /* Ensure the link wraps if too long */
+    margin-bottom: 10px;
+}
+
+.modal button {
+    margin: 5px;
+    padding: 8px 16px;
+    /* background-color: #007BFF; */
+    color: rgb(36, 19, 19);
+    border: 2px solid red;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* .modal button:hover {
+    background-color: #b32d00;
+} */
+.overlay-component {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);  /* Center the overlay */
+    width: calc(100% - 10px);  /* Adjust based on your board's width */
+    height: calc(100% - 10px);  /* Adjust based on your board's height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background */
+    z-index: 1000;  /* Ensure it is on top */
+    margin-left: 10px;
+  }
+  
+  .modal {
+    background:rgb(246, 241, 232);;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(77, 76, 76, 0.1);
+    text-align: center;
+    width: 300px;  /* Adjust modal width as needed */
+    margin-bottom: 80px;
+  }

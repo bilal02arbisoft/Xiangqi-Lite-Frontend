@@ -45,8 +45,8 @@ function SignUpForm() {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        skill_level: formData.skill_level,
         profile: {
-          skill_level: formData.skill_level,
           country: formData.country,
         },
       };

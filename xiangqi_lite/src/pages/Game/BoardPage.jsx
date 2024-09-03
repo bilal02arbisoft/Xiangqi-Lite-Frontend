@@ -8,11 +8,13 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGameTimer } from 'pages/Game/Timer';
-import MoveHistory from "pages/Game/MoveHistory";
-import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/WebsocketHandler'; 
+import { useGameTimer } from 'pages/Game/components/Timer';
+import MoveHistory from "pages/Game/components/MoveHistory";
+import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/components/WebsocketHandler'; 
 import WebSocketManager from  'utils/useWebSocket';
-import GameTabs from 'pages/Game/GameTab';
+import GameTabs from 'pages/Game/components/GameTab';
+import PlayerCard from "pages/Game/components/PlayerCard";
+import OverlayComponent from 'pages/Game/components/Overlay';
 export const BoardContext = React.createContext();
 
 function BoardPage() {
@@ -39,7 +41,44 @@ function BoardPage() {
     const wsManagerRef = useRef(null); 
     const [moveHistory, setMoveHistory,latestMoveHisotry] = useState([]); 
     const [fenHistory, setFenHistory] = useState([]); 
+    const [chatMessages, setChatMessages] = useState([]);
+    const [redPlayer, setRedPlayer] = useState(null);
+    const [blackPlayer, setBlackPlayer] = useState(null);
+    const [isGameReady, setIsGameReady] = useState(false);
+    const [showOverlay, setShowOverlay] = useState(true); 
+    const [countdown, setCountdown] = useState(5);
+    const [isCountdownActive, setIsCountdownActive] = useState(false);
+    const [showCountdown, setShowCountdown] = useState(false);
 
+
+
+    const updateChatMessages = (chatMessage) => {
+        setChatMessages(prevMessages => [...prevMessages, chatMessage]);
+    };
+    const handleClose = () => {
+        setShowOverlay(false);
+    };
+    const handleGameGetSuccess = (gameData) => {
+        setFENOutput(gameData.fen);
+        handleParseFENInput(gameData.fen);
+        setCurrentTurn(gameData.turn);
+        gameIdRef.current = gameData.game_id;  
+    
+        if (usernameRef.current === gameData.black_player) {
+            handleFlipBoard(); 
+        }
+    
+        setRedTimeRemaining(gameData.red_time_remaining);
+        setBlackTimeRemaining(gameData.black_time_remaining);
+       
+    };
+    const handleUserListData = (userData) => {
+        if (userData.length > 0) {
+            setRedPlayer(userData[0]);
+            setBlackPlayer(userData[1]);
+        }
+    };
+    
     
     const {
         redTimeRemaining,
@@ -75,8 +114,15 @@ function BoardPage() {
         usernameRef,
         latestCurrentTurn, 
         updateMoveHistory,
-        moveHistory
-
+        moveHistory,
+       updateChatMessages,
+       handleGameGetSuccess,
+       handleUserListData,
+       setIsGameReady,
+       setShowOverlay,
+       setShowCountdown,
+       setIsCountdownActive
+    
     };
 
 
@@ -103,46 +149,15 @@ function BoardPage() {
             await fetchUserDetails();
             try {
                 const token = localStorage.getItem('access_token');
-                if (gameIdFromParams) {
-                    const response = await axios.get(`http://127.0.0.1:8000/game/detail/${gameIdFromParams}/`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    const gameData = response.data;
-                    setFENOutput(gameData.fen);
-                    handleParseFENInput(gameData.fen);
-                    setCurrentTurn(gameData.turn)
-                    gameIdRef.current = gameIdFromParams;  
-                    if (usernameRef.current === gameData.black_player) {
-                        handleFlipBoard(); 
-                    }
-                   
-                        setRedTimeRemaining(gameData.red_time_remaining);
-                        setBlackTimeRemaining(gameData.black_time_remaining);
-        
-                        if (gameData.turn === 'red') {
-                            setIsRedTimerRunning(true);
-                            setIsBlackTimerRunning(false);
-                            setTurnStartTime(Date.now());
-                        } else {
-                            setIsRedTimerRunning(false);
-                            setIsBlackTimerRunning(true);
-                            setTurnStartTime(Date.now());
-                        }
-
-
+                if (!gameIdFromParams) {
                     
-                } else {
                     const response = await axios.post('http://127.0.0.1:8000/game/create/', null, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
                     const gameData = response.data;
-                    setFENOutput(gameData.initial_fen);
-                    handleParseFENInput(gameData.initial_fen);
-                    gameIdRef.current = gameData.game_id;  
+                     gameIdRef.current = gameData.game_id;  
                     navigate(`/game/${gameData.game_id}`);  
                    
                 }
@@ -170,6 +185,31 @@ function BoardPage() {
                 }
             };
         }, []); 
+
+        useEffect(() => {
+            let timerId;
+    
+            if (isCountdownActive && countdown > 0) {
+                timerId = setTimeout(() => {
+                    setCountdown(countdown - 1);
+                }, 1000);
+            } else if (countdown === 0) {
+                setIsCountdownActive(false); // Stop the countdown
+                setShowOverlay(false); // Hide the overlay completely
+                if (latestCurrentTurn.current === 'red') {
+                    setIsRedTimerRunning(true);
+                    setIsBlackTimerRunning(false);
+        
+                    
+                } else {
+                    setIsRedTimerRunning(false);
+                    setIsBlackTimerRunning(true);
+                    
+                }
+            }
+    
+            return () => clearTimeout(timerId);
+        }, [countdown, isCountdownActive]);
        
 
     function addAvailableStyle() {
@@ -272,15 +312,15 @@ function BoardPage() {
         }
     }
     function handleUndo() {
-        if (moveHistory.length > 0 && fenHistory.length > 1) { // Ensure there are moves to undo
-            const newMoveHistory = moveHistory.slice(0, -1); // Remove last move
-            const newFenHistory = fenHistory.slice(0, -1); // Remove last FEN
+        if (moveHistory.length > 0 && fenHistory.length > 1) { 
+            const newMoveHistory = moveHistory.slice(0, -1);
+            const newFenHistory = fenHistory.slice(0, -1); 
     
             setMoveHistory(newMoveHistory);
             setFenHistory(newFenHistory);
     
             const previousFEN = newFenHistory[newFenHistory.length - 1];
-            handleParseFENInput(previousFEN); // Revert to the previous board state
+            handleParseFENInput(previousFEN); 
         }
     }
 
@@ -331,32 +371,65 @@ function BoardPage() {
                     handleOpenErrorModal,
                     findAvailableSqr,
                     handleSelectSquare,
-                    moveHistory
+                    moveHistory,
+                    wsManagerRef,
+                    updateChatMessages,
+                    chatMessages,
+                    setChatMessages
                 }}
             >
-                 <div className="app__container">
-                <div className={`board-container ${error ? "disabled" : ""}`}>
-                    <Board squares={sqr} />
-                </div>
-                <div className="side-container">
-                    <div className={`timer-container ${!isFlipped ? 'timer-container-top' : 'timer-container-bottom'}`}>
-                        {/* Opponent's timer */}
-                        <div className={!isFlipped ? "timer-black" : "timer-red"}>
-                            <p>{!isFlipped ? `Black Player: ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}` : `Red Player: ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}`}</p>
-                         {/* {console.log(isFlipped)} */}
-                        </div>
-                    </div>
-                    <div className="tabs-container">
-                        <GameTabs/>
-                    </div>
-                    <div className={`timer-container ${!isFlipped ? 'timer-container-bottom' : 'timer-container-top'}`}>
-                        
-                        <div className={!isFlipped ? "timer-red" : "timer-black"}>
-                            <p>{!isFlipped ? `Red Player: ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}` : `Black Player: ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}`}</p>
-                        </div>
-                    </div>
+                <div className="app__container">
+                
+                <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
+                <OverlayComponent
+                gameId={gameIdRef.current}
+                isVisible={showOverlay}
+                onClose={() => setShowOverlay(false)}
+                countdown={countdown}
+                showCountdown={showCountdown}
+            />
+        <Board squares={sqr} />
+    </div>
+
+    <div className="side-container">
+        <div className={`player-timer-row ${!isFlipped ? 'row-top' : 'row-bottom'}`}>
+            
+            <div className={`timer-container ${!isFlipped ? 'timer-container-top' : 'timer-container-bottom'}`}>
+                <div className={!isFlipped ? 'timer-black' : 'timer-red'}>
+                    <p>
+                        {!isFlipped
+                            ? `Game Time : ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}`
+                            : `Game Time : ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}`}
+                    </p>
                 </div>
             </div>
+            <PlayerCard player={isFlipped ? redPlayer : blackPlayer} color={isFlipped ? 'red' : 'black'} />
+        </div>
+        
+        
+        <div className="combined-section">
+            <div className="tabs-container">
+                <GameTabs />
+            </div>
+
+           
+            <div className={`player-timer-row ${!isFlipped ? 'row-bottom' : 'row-top'}`}>
+                
+                <div className={`timer-container ${!isFlipped ? 'timer-container-bottom' : 'timer-container-top'}`}>
+                    <div className={!isFlipped ? 'timer-red' : 'timer-black'}>
+                        <p>
+                            {!isFlipped
+                                ? `Game Time: ${Math.floor(redTimeRemaining / 60)}:${redTimeRemaining % 60 < 10 ? `0${redTimeRemaining % 60}` : redTimeRemaining % 60}`
+                                : `Game Time: ${Math.floor(blackTimeRemaining / 60)}:${blackTimeRemaining % 60 < 10 ? `0${blackTimeRemaining % 60}` : blackTimeRemaining % 60}`}
+                        </p>
+                    </div>
+                </div>
+                <PlayerCard player={isFlipped ? blackPlayer : redPlayer} color={isFlipped ? 'black' : 'red'} />
+            </div>
+        </div>
+        
+    </div>
+</div>
             </BoardContext.Provider>
         </DndProvider>
     );
