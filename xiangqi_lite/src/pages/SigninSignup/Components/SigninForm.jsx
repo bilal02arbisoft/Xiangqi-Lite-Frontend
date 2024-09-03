@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import InputField from 'components/InputField';
 import Button from 'components/Button';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from 'auth/useAuth'; 
 
 function SignInForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: "/profile" } };
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -45,16 +48,17 @@ function SignInForm() {
 
       const result = await response.json();
       if (response.ok) {
-        // Extract the tokens from the response
+      
         const { access_token: access, refresh_token: refresh } = result;
         console.log("access token: "+result)
 
-        // Store the tokens in localStorage
+        
         localStorage.setItem('access_token', access);
         localStorage.setItem('refresh_token', refresh);
 
         setMessage('Sign in successful!');
-        navigate('/profile')
+        login(access)
+        navigate(from.pathname, { replace: true });
       } else {
         const newErrors = {};
         if (result.username) newErrors.username = result.username[0];

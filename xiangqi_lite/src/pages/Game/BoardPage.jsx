@@ -37,7 +37,7 @@ function BoardPage() {
     const [fullMoveNumber, setFullMoveNumber] = useState(1);
     const [sqrHistory, setSqrHistory] = useState([initializeSquares()]);
     const [serverTime, setServerTime] = useState(Date.now());
-    const [turnStartTime, setTurnStartTime] = useState(null); 
+    const [turnStartTime, setTurnStartTime, latestTurnStartTime] = useState(null); 
     const wsManagerRef = useRef(null); 
     const [moveHistory, setMoveHistory,latestMoveHisotry] = useState([]); 
     const [fenHistory, setFenHistory] = useState([]); 
@@ -50,18 +50,14 @@ function BoardPage() {
     const [isCountdownActive, setIsCountdownActive] = useState(false);
     const [showCountdown, setShowCountdown] = useState(false);
 
-
-
     const updateChatMessages = (chatMessage) => {
         setChatMessages(prevMessages => [...prevMessages, chatMessage]);
-    };
-    const handleClose = () => {
-        setShowOverlay(false);
     };
     const handleGameGetSuccess = (gameData) => {
         setFENOutput(gameData.fen);
         handleParseFENInput(gameData.fen);
         setCurrentTurn(gameData.turn);
+        console.log("Current turn on game start",latestCurrentTurn.current)
         gameIdRef.current = gameData.game_id;  
     
         if (usernameRef.current === gameData.black_player) {
@@ -115,13 +111,13 @@ function BoardPage() {
         latestCurrentTurn, 
         updateMoveHistory,
         moveHistory,
-       updateChatMessages,
-       handleGameGetSuccess,
-       handleUserListData,
-       setIsGameReady,
-       setShowOverlay,
-       setShowCountdown,
-       setIsCountdownActive
+        updateChatMessages,
+        handleGameGetSuccess,
+        handleUserListData,
+        setIsGameReady,
+        setShowOverlay,
+        setShowCountdown,
+        setIsCountdownActive
     
     };
 
@@ -194,8 +190,8 @@ function BoardPage() {
                     setCountdown(countdown - 1);
                 }, 1000);
             } else if (countdown === 0) {
-                setIsCountdownActive(false); // Stop the countdown
-                setShowOverlay(false); // Hide the overlay completely
+                setIsCountdownActive(false); 
+                setShowOverlay(false); 
                 if (latestCurrentTurn.current === 'red') {
                     setIsRedTimerRunning(true);
                     setIsBlackTimerRunning(false);
@@ -289,7 +285,9 @@ function BoardPage() {
 
         if ( move && wsManagerRef.current && wsManagerRef.current.isConnected) {
            
-            const thinkingTime = Math.floor((Date.now() - turnStartTime) / 1000); 
+            const thinkingTime = Math.floor((Date.now() - latestTurnStartTime.current) / 1000); 
+            console.log("Thinking time :",thinkingTime)
+            console.log("Turn start time",latestTurnStartTime.current)
 
             const message = JSON.stringify({
                 type: 'game.move',
@@ -300,12 +298,12 @@ function BoardPage() {
             });
             wsManagerRef.current.sendMessage(message);
 
-            if (currentTurn === 'red') {
-                setIsRedTimerRunning(false);
-                setIsBlackTimerRunning(true);
-            } else {
-                setIsBlackTimerRunning(false);
+            if (latestCurrentTurn.current === 'red') {
                 setIsRedTimerRunning(true);
+                setIsBlackTimerRunning(false);
+            } else {
+                setIsBlackTimerRunning(true);
+                setIsRedTimerRunning(false);
             }
             updateMoveHistory(currentTurn, moveplayed.current);
         
@@ -375,7 +373,8 @@ function BoardPage() {
                     wsManagerRef,
                     updateChatMessages,
                     chatMessages,
-                    setChatMessages
+                    setChatMessages,
+                    latestIsFlipped
                 }}
             >
                 <div className="app__container">

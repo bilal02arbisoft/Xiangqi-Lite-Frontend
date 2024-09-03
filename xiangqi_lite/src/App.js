@@ -6,24 +6,25 @@ import ProfileEditPage from "pages/Profile/Profile";
 import VerifyOtpPage from 'pages/Profile/VerifyOtp';
 import FriendsPage from 'pages/Friend/Friend'
 import BoardPage from 'pages/Game/BoardPage';
-
+import { AuthProvider } from 'auth/AuthProvider';
+import ProtectedRoute from 'components/ProtectedRoute';
 
 function App() {
   return (
+    <AuthProvider>
       <BrowserRouter>
-        <main>
-          <Routes>
-          <Route path='/friend' element ={<FriendsPage/>} />
-            <Route path="/verify-otp" element= {<VerifyOtpPage />} />
-            <Route path='/profile' element={<ProfileEditPage />} />
-            <Route path="/game/:game_id?" element={<BoardPage />} />
-            <Route path="/auth" element={<SignUpPage />}>
+        <Routes>
+             <Route path="/auth" element={<SignUpPage />}>
               <Route path="login" element={<SignUpPage />} />
               <Route path="signup" element={<SignUpPage />} />
-            </Route>
-          </Routes>
-        </main>
+              </Route>
+          <Route path="/friend" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
+          <Route path="/verify-otp" element={<ProtectedRoute><VerifyOtpPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
+          <Route path="/game/:game_id?" element={<ProtectedRoute><BoardPage /></ProtectedRoute>} />
+        </Routes>
       </BrowserRouter>
+    </AuthProvider>
   );
 }
 

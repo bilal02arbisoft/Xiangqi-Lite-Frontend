@@ -63,19 +63,21 @@ export const handleWebSocketMessage = (data, props) => {
                 setBlackTimeRemaining(data.black_time_remaining);
                 setServerTime(data.server_time * 1000);
                 updateMoveHistory(data.player, data.move);
-                console.log("Move history",moveHistory)
+                
+                setTurnStartTime(Date.now());
                 
 
 
                 if (data.player === 'red') {
                     setIsRedTimerRunning(true);
                     setIsBlackTimerRunning(false);
-                    setTurnStartTime(Date.now());
+                   
                 } else {
                     setIsRedTimerRunning(false);
                     setIsBlackTimerRunning(true);
-                    setTurnStartTime(Date.now());
+                   
                 }
+                console.log("Move recieved on socket")
             }
             break;
 

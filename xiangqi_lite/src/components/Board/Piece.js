@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useDrag } from 'react-dnd';
+import { BoardContext }  from "pages/Game/BoardPage";
 
 
 export default function Piece({ pieceInfo, square }) {
+  const {latestIsFlipped} = useContext(BoardContext);
+
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "PIECE",
@@ -22,11 +25,12 @@ export default function Piece({ pieceInfo, square }) {
   const backgroundColor = pieceInfo.color === "red" ? "rgb(222, 34, 24)" : "rgb(0, 0, 0)";
   return (
     <div
+      key={`${square}_${latestIsFlipped.current ? 'flipped' : 'normal'}`} // Dynamic key based on flip state
       className="piece"
       ref={drag}  
       style={{
         backgroundColor: backgroundColor,
-        opacity: isDragging ? 0.5 : 1,  
+        opacity: isDragging ? 0.5 : 1,
       }}
     >
       <img

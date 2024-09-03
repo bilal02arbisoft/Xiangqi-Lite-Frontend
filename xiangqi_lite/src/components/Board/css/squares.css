@@ -38,4 +38,6 @@ img {
   border-radius: 100%; 
   border: 6px solid rgb(245, 168, 23);
 }
-
+.square__highlight {
+  background: none;
+}
