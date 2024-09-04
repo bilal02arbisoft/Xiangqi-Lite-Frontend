@@ -5,9 +5,6 @@ import Chat from './Chat';
 import Viewers from 'pages/Game/components/Viewers';
 
 
-
-
-
 function TabPanel({ children }) {
     return <div className="tab-content">{children}</div>;
 }
@@ -21,16 +18,19 @@ function TabPanel({ children }) {
         <div className='tabs-container'>
             <div className="tab-menu">
                 <button onClick={() => setActiveTab('chat')} className={activeTab === 'chat' ? 'active' : ''}>
-                    <h3>Chat</h3>
+                    
                     <img src="https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/chat-icon.svg" className="to-white" alt="chat icon"></img>
+                    <h3>Chat</h3>
                 </button>
                 <button onClick={() => setActiveTab('moves')} className={activeTab === 'moves' ? 'active' : ''}>
-                    <h3>Moves</h3>
+                    
                     <img src="https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/game-icon-red.svg" alt="moves icon"></img>
+                    <h3>Moves</h3>
                 </button>
                 <button onClick={() => setActiveTab('viewers')} className={activeTab === 'viewers' ? 'active' : ''}>
-                    <h3>Viewers</h3>
+                    
                     <img src="https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/viewers-icon-red.svg" className="to-white" alt="viewers icon"></img>
+                    <h3>Viewers</h3>
                 </button>
             </div>
             <TabPanel>

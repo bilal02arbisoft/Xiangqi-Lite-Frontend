@@ -13,9 +13,6 @@
     cursor: pointer;
 }
 
-/* .modal button:hover {
-    background-color: #b32d00;
-} */
 .overlay-component {
     position: absolute;
     top: 50%;

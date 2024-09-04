@@ -41,7 +41,9 @@ export const handleWebSocketMessage = (data, props) => {
         setShowCountdown, 
         setIsCountdownActive,
         setViewers,
-        setGamePlayer
+        setGamePlayer,
+        addUser
+        
     } = props;
 
     switch (data.type) {
@@ -91,12 +93,15 @@ export const handleWebSocketMessage = (data, props) => {
             break;
         case 'game.users.list':
             handleUserListData(data.data)
+            addUser(data.data)
+
             break;
         
         case 'game.viewer.joined':
             setViewers((prevViewers) => [...prevViewers, data.data]);
             console.log("My username",usernameRef.current)
             console.log("Revied username",data.data.username)
+            addUser(data.data)
             setShowOverlay(false)
             if ( usernameRef.current === data.data.username) {
                 setIsGameReady(true);
@@ -113,7 +118,6 @@ export const handleWebSocketMessage = (data, props) => {
                 }  
             }
            
-          
             break;
         case 'error':
             setError(true);

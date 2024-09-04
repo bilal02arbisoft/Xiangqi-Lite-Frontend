@@ -5,7 +5,7 @@ export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
 
   const checkAuth = () => {
     const token = localStorage.getItem('access_token');
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         logout();
       }
     }
-    setLoading(false); // Set loading to false after check
+    setLoading(false); 
   };
 
   const login = (token) => {

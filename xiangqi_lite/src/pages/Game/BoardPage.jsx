@@ -51,6 +51,21 @@ function BoardPage() {
     const [showCountdown, setShowCountdown] = useState(false);
     const [viewers, setViewers] = useState([]);
     const [gameplayer,setGamePlayer] = useState(true);
+    const [users, setUsers] = useState({});
+    const useridRef  = useRef(null);
+    const addUser = (newUsers) => {
+        setUsers(prevUsers => {
+          const usersData = { ...prevUsers }; 
+          if (Array.isArray(newUsers)) {
+            newUsers.forEach((user) => {
+              usersData[user.id] = user; 
+            });
+          } else if (newUsers.id) {
+            usersData[newUsers.id] = newUsers; 
+          }
+          return usersData; 
+        });
+      };
 
     const updateChatMessages = (chatMessage) => {
         setChatMessages(prevMessages => [...prevMessages, chatMessage]);
@@ -121,7 +136,8 @@ function BoardPage() {
         setShowCountdown,
         setIsCountdownActive,
         setViewers,
-        setGamePlayer
+        setGamePlayer,
+        addUser
     
     };
 
@@ -136,7 +152,10 @@ function BoardPage() {
                 });
 
                 const userData = response.data;
-                usernameRef.current = userData.username;  
+                usernameRef.current = userData.username;
+                useridRef.current = userData.id;
+                console.log("This is id",useridRef.current)
+                
             } 
             catch (error) {
                 console.error('Error fetching user details:', error);
@@ -379,7 +398,11 @@ function BoardPage() {
                     chatMessages,
                     setChatMessages,
                     latestIsFlipped,
-                    viewers
+                    viewers,
+                    usernameRef,
+                    users,
+                    useridRef
+                    
                 }}
             >
     <div className="app__container">
@@ -401,6 +424,7 @@ function BoardPage() {
             redTimeRemaining={redTimeRemaining}
             redPlayer={redPlayer}
             blackPlayer={blackPlayer}
+            isTimerActive={latestCurrentTurn.current === "black"}
           />
 
           <div className="combined-section">
@@ -414,6 +438,7 @@ function BoardPage() {
               redTimeRemaining={redTimeRemaining}
               redPlayer={redPlayer}
               blackPlayer={blackPlayer}
+              isTimerActive={latestCurrentTurn.current === "red"}
             />
           </div>
         </div>

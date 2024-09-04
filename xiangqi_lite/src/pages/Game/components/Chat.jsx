@@ -1,52 +1,85 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { BoardContext } from 'pages/Game/BoardPage';
+import 'css/chat.css'; // Ensure the CSS file path is correct
 
 const Chat = () => {
-    const { wsManagerRef, updateChatMessages, chatMessages, setChatMessages } = useContext(BoardContext);
-    const [message, setMessage] = useState('');
+  const { wsManagerRef, updateChatMessages, chatMessages, users, useridRef } = useContext(BoardContext);
+  const [message, setMessage] = useState('');
 
-    const handleSendMessage = () => {
-        if (message.trim()) {
-            const chatMessage = {
-                type: 'game.chat',
-                message,
-                timestamp: new Date().toISOString(),
-                username: 'You', 
-                isSent: 'sent'
-            };
-            try {
-                wsManagerRef.current.sendMessage(JSON.stringify(chatMessage));
-                updateChatMessages(chatMessage);
-                setMessage('');
-            } catch (error) {
-                console.error('Failed to send message:', error);
-            }
-        }
-    };
+  const getFormattedDate = () => {
+    const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
+    return new Date().toLocaleDateString('en-US', options);
+  };
 
-    return (
-        <div className="chat-container">
-            <div className="messages-container">
-                {chatMessages.map((msg, index) => (
-                    <div key={index} className={`message ${msg.isSent=='sent' ? 'sent' : 'received'}`}>
-                        <strong>{msg.username || 'Unknown User'}</strong>: {msg.message || 'No message provided'}
-                        <div className="timestamp">
-                            {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'No timestamp'}
-                        </div>
-                    </div>
-                ))}
+  const [currentDate, setCurrentDate] = useState(getFormattedDate());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDate(getFormattedDate());
+    }, 60000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleSendMessage = (event) => {
+    if (event.key === 'Enter' && message.trim()) {
+      event.preventDefault();
+      const chatMessage = {
+        type: 'game.chat',
+        message,
+        timestamp: new Date().toISOString(),
+        user_id: useridRef.current,
+        isSent: 'sent'
+      };
+      updateChatMessages(chatMessage);
+      try {
+        wsManagerRef.current.sendMessage(JSON.stringify(chatMessage));
+        setMessage('');
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
+    }
+  };
+
+  return (
+    <div className="chat-container">
+      <div className="date-header">{currentDate}</div>
+      <div className="messages-container">
+        {chatMessages.map((msg, index) => {
+          const user = users[msg.user_id];
+          console.log("its user", user);
+
+          return (
+            <div key={index} className={`message ${msg.isSent === 'sent' ? 'sent' : 'received'}`}>
+              <img
+                src={user ? `http://127.0.0.1:8000${user.profile_picture}` : 'default_profile.png'}
+                alt="User Profile"
+                className="profile-picture"
+              />
+              <div className="message-content">
+                <div className="message-info">
+                  <strong className="username">{user ? user.username : 'Unknown User'}</strong>
+                  <p className="message-text">{msg.message}</p>
+                </div>
+               
+              </div>
+              <div className="timestamp">
+                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </div>
             </div>
-            <div className="input-container">
-                <input
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    placeholder="Type a message"
-                />
-                <button onClick={handleSendMessage}>Send</button>
-            </div>
-        </div>
-    );
-}    
+          );
+        })}
+      </div>
+      <div className="input-container">
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleSendMessage}
+          placeholder="Message (or /help)"
+          rows="1"
+        />
+      </div>
+    </div>
+  );
+};
 
 export default Chat;
