@@ -63,7 +63,7 @@ export const handleWebSocketMessage = (data, props) => {
                 setRedTimeRemaining(data.red_time_remaining);
                 setBlackTimeRemaining(data.black_time_remaining);
                 setServerTime(data.server_time * 1000);
-                updateMoveHistory(data.player, data.move);
+                updateMoveHistory(data.player, data.move, data.fen);
                 setTurnStartTime(Date.now());
                 if (data.player === 'red') {
                     setIsRedTimerRunning(true);

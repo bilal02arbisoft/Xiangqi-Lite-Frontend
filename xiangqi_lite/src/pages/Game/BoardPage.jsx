@@ -102,16 +102,22 @@ function BoardPage() {
         setIsBlackTimerRunning
     } = useGameTimer(600, 600);
 
-    function updateMoveHistory(player, move) {
+    function updateMoveHistory(player, move, fen) {
         setMoveHistory((prevHistory) => {
-            const newHistory = [...prevHistory];
-            console.log("move which i'm updating",move)
-            
-                newHistory.push(move); 
-            
-            return newHistory;
+          const newHistory = [...prevHistory];
+          console.log("move which I'm updating", move);
+          newHistory.push(move);
+      
+          return newHistory;
         });
-    }
+      
+        setFenHistory((prevFenHistory) => {
+          const newFenHistory = [...prevFenHistory];
+          newFenHistory.push(fen);
+      
+          return newFenHistory;
+        });
+      }
 
     const webSocketProps = {
         setRedTimeRemaining,
@@ -267,13 +273,14 @@ function BoardPage() {
             return newBoard;
         });
     }
+    function isPlayerAllowedToMove() {
+        return gameplayer && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
+      }
 
     function handleMovePiece(piece, color, row, column) {
-        const isPlayerAllowedToMove = 
-        (gameplayer && ((currentTurn === "red" && !isFlipped) ||
-         (currentTurn === "black" && isFlipped)));
+        
 
-        if (!isPlayerAllowedToMove) {
+        if (!isPlayerAllowedToMove()) {
             return;
         }
 
@@ -303,14 +310,16 @@ function BoardPage() {
             setSelectedSquareInfo,
             moveplayed
         );
-
-        handleGenerateFEN();
+       
+        
 
         if ( move && wsManagerRef.current && wsManagerRef.current.isConnected) {
+            updateMoveHistory(currentTurn, moveplayed.current,latestFENOutput.current);
            
             const thinkingTime = Math.floor((Date.now() - latestTurnStartTime.current) / 1000); 
             console.log("Thinking time :",thinkingTime)
             console.log("Turn start time",latestTurnStartTime.current)
+            handleGenerateFEN();
 
             const message = JSON.stringify({
                 type: 'game.move',
@@ -328,7 +337,7 @@ function BoardPage() {
                 setIsBlackTimerRunning(true);
                 setIsRedTimerRunning(false);
             }
-            updateMoveHistory(currentTurn, moveplayed.current);
+           
         
         }
     }
@@ -401,7 +410,9 @@ function BoardPage() {
                     viewers,
                     usernameRef,
                     users,
-                    useridRef
+                    useridRef,
+                    fenHistory,
+                    isPlayerAllowedToMove
                     
                 }}
             >

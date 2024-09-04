@@ -19,7 +19,7 @@ body, html {
     background-image: 
         url('https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/light-bg.svg'),;
        
-    /* background-color: rgb(246, 241, 232); */
+    
     background-position: center center, bottom center;
     background-size: cover, contain;
     background-repeat: no-repeat, no-repeat;
@@ -70,7 +70,7 @@ body, html {
   border-top: 1px solid;
   border-color: rgb(218, 210, 202);
   border-image: initial;
-  /* border-width: 1px 0px; */
+  
 }
 
 .timer-container {
@@ -210,27 +210,91 @@ h3 {
     background-color: #cccccc;
     cursor: not-allowed;
 }
-
 .move-history-container {
-  
-   max-height: 800px;
-  overflow-y: auto;
-
-  padding: 10px;
+  background-color: #f8f4ed;
+  padding: 16px;
   border-radius: 8px;
-}
-
-.move-history-container table {
+  font-family: 'Arial', sans-serif;
+  height: 100%;
   width: 100%;
-  border-collapse: collapse;
-  
 }
 
-.move-history-container td {
-  border: 1px solid rgb(151, 104, 16);
-  padding: 3px;
+.moves-navigator {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.move-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0dcd4;
+}
+
+
+.move-item:nth-child(odd) {
+  background-color: #f8f4ed;
+}
+
+.move-item:nth-child(even) {
+  background-color: #eae6de;
+}
+
+.move-index {
+  flex: 0 0 30px;
   text-align: center;
 }
+
+.move {
+  flex: 1;
+  text-align: center;
+}
+
+.red-move, .black-move {
+  color: #4a2e2c;
+}
+
+.highlight {
+  background-color: #dcd1c4; 
+}
+
+.history-controls {
+  display: flex;
+  justify-content:space-evenly;
+  flex-direction: row;
+  align-items: center; 
+  gap: 60px;
+  margin-top: 16px;
+  width: 100%;
+  background-color: rgb(223, 215, 207);
+}
+
+.control-button {
+  
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.control-button:disabled {
+  /* Disabled color */
+  cursor: not-allowed; /* Change cursor when button is disabled */
+}
+
+.control-button:hover:not(:disabled) {
+  background-color: #c0c0c0;
+}
+
+.page-number {
+  font-weight: bold;
+  padding: 0 8px;
+  color: #4a2e2c;
+}
+
 
 .board.blurred {
   filter: blur(2px);
