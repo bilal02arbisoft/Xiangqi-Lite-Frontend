@@ -42,7 +42,9 @@ export const handleWebSocketMessage = (data, props) => {
         setIsCountdownActive,
         setViewers,
         setGamePlayer,
-        addUser
+        addUser,
+        handleGameEnd
+        
         
     } = props;
 
@@ -74,7 +76,7 @@ export const handleWebSocketMessage = (data, props) => {
                     setIsBlackTimerRunning(true);
                    
                 }
-                console.log("Move recieved on socket")
+                
             }
             break;
 
@@ -119,6 +121,10 @@ export const handleWebSocketMessage = (data, props) => {
             }
            
             break;
+        case 'game.end.success':
+            handleGameEnd(data.message)
+            break;
+
         case 'error':
             setError(true);
             console.error("Error received:", data.message);

@@ -281,8 +281,8 @@ h3 {
 }
 
 .control-button:disabled {
-  /* Disabled color */
-  cursor: not-allowed; /* Change cursor when button is disabled */
+  
+  cursor: not-allowed; 
 }
 
 .control-button:hover:not(:disabled) {
@@ -303,4 +303,28 @@ h3 {
   margin-top: 10px;
   margin-left: 450px;
 }
+.warning-banner {
+  background-color: #fcd974; 
+  color: #b71c1c; 
+  text-align: center;
+  
+  font-weight: bold;
+  border-radius: 5px;
+  position: relative; 
+  z-index: 1000; 
+  width: 70%;
+  height: 50%;
+}
+
+.left-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: flex-start; 
+  gap: 5px; 
+  width: 100%; 
+  height: 100%; 
+  padding: 20px; 
+}
+
 

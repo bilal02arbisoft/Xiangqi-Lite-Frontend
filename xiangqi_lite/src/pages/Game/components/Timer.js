@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-export const useGameTimer = (initialRedTime, initialBlackTime) => {
-    const [redTimeRemaining, setRedTimeRemaining] = useState(initialRedTime); 
-    const [blackTimeRemaining, setBlackTimeRemaining] = useState(initialBlackTime); 
+export const useGameTimer = (initialRedTime, initialBlackTime, onTimerExpire, isPlayerAllowedToMove) => {
+    const [redTimeRemaining, setRedTimeRemaining] = useState(initialRedTime);
+    const [blackTimeRemaining, setBlackTimeRemaining] = useState(initialBlackTime);
     const [isRedTimerRunning, setIsRedTimerRunning] = useState(false);
     const [isBlackTimerRunning, setIsBlackTimerRunning] = useState(false);
 
@@ -18,11 +18,16 @@ export const useGameTimer = (initialRedTime, initialBlackTime) => {
                     } else {
                         clearInterval(redTimerInterval);
                         setIsRedTimerRunning(false);
+                        if (onTimerExpire && isPlayerAllowedToMove()) {
+                            onTimerExpire();
+                        }
                         return 0;
                     }
                 });
             }, 1000);
-        } else if (isBlackTimerRunning) {
+        } 
+
+        if (isBlackTimerRunning) {
             blackTimerInterval = setInterval(() => {
                 setBlackTimeRemaining((prevTime) => {
                     if (prevTime > 0) {
@@ -30,6 +35,9 @@ export const useGameTimer = (initialRedTime, initialBlackTime) => {
                     } else {
                         clearInterval(blackTimerInterval);
                         setIsBlackTimerRunning(false);
+                        if (onTimerExpire && isPlayerAllowedToMove()) {
+                            onTimerExpire();
+                        }
                         return 0;
                     }
                 });
@@ -40,7 +48,7 @@ export const useGameTimer = (initialRedTime, initialBlackTime) => {
             clearInterval(redTimerInterval);
             clearInterval(blackTimerInterval);
         };
-    }, [isRedTimerRunning, isBlackTimerRunning]);
+    }, [isRedTimerRunning, isBlackTimerRunning, onTimerExpire, isPlayerAllowedToMove]);
 
     return {
         redTimeRemaining,
@@ -48,6 +56,6 @@ export const useGameTimer = (initialRedTime, initialBlackTime) => {
         blackTimeRemaining,
         setBlackTimeRemaining,
         setIsRedTimerRunning,
-        setIsBlackTimerRunning
+        setIsBlackTimerRunning,
     };
 };

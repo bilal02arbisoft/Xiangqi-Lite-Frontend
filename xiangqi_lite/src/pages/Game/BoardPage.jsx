@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import "css/boardpage.css";
 import useState from "react-usestateref";
 import axios from 'axios';
@@ -53,6 +53,16 @@ function BoardPage() {
     const [gameplayer,setGamePlayer] = useState(true);
     const [users, setUsers] = useState({});
     const useridRef  = useRef(null);
+    const [showWarning, setShowWarning] = useState(false); 
+    const [warningCountdown, setWarningCountdown] = useState(60); 
+    const [isWarningActive, setIsWarningActive] = useState(false); 
+    const [overlayType, setOverlayType] = useState('start'); 
+    const [gameResult, setGameResult] = useState(''); 
+
+    const isPlayerAllowedToMove = useCallback(() => {
+        return gameplayer && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
+    }, [gameplayer, currentTurn, isFlipped]);
+
     const addUser = (newUsers) => {
         setUsers(prevUsers => {
           const usersData = { ...prevUsers }; 
@@ -66,6 +76,27 @@ function BoardPage() {
           return usersData; 
         });
       };
+    
+    const handleTimerExpire = () => {
+        console.log(`${usernameRef.current} timer expired!`);
+
+       
+        if (isPlayerAllowedToMove()) {
+            console.log("Sending game.end event to the backend");
+
+            
+            if (wsManagerRef.current && wsManagerRef.current.isConnected) {
+                const message = JSON.stringify({
+                    type: 'game.end',
+                    game_id: gameIdRef.current,
+                    losing_player:usernameRef.current,
+                });
+                wsManagerRef.current.sendMessage(message);
+            }
+        } else {
+            console.log("Not allowed to send game.end event");
+        }
+    };
 
     const updateChatMessages = (chatMessage) => {
         setChatMessages(prevMessages => [...prevMessages, chatMessage]);
@@ -100,7 +131,7 @@ function BoardPage() {
         setBlackTimeRemaining,
         setIsRedTimerRunning,
         setIsBlackTimerRunning
-    } = useGameTimer(600, 600);
+    } = useGameTimer(300, 300,handleTimerExpire,isPlayerAllowedToMove);
 
     function updateMoveHistory(player, move, fen) {
         setMoveHistory((prevHistory) => {
@@ -143,7 +174,8 @@ function BoardPage() {
         setIsCountdownActive,
         setViewers,
         setGamePlayer,
-        addUser
+        addUser,
+        handleGameEnd
     
     };
 
@@ -235,6 +267,51 @@ function BoardPage() {
     
             return () => clearTimeout(timerId);
         }, [countdown, isCountdownActive]);
+           
+    useEffect(() => {
+        let warningTimerId;
+
+        if (isWarningActive && warningCountdown > 0) {
+            warningTimerId = setTimeout(() => {
+                setWarningCountdown(prevCountdown => prevCountdown - 1);
+            }, 1000);
+        } else if (warningCountdown === 0) {
+            setIsWarningActive(false);
+            handleTimerExpire();
+            // setShowOverlay(true);
+            // setOverlayType('end');
+            // setGameResult('Game Abandoned');
+            setGameOver(true);
+        }
+
+        return () => clearTimeout(warningTimerId);
+    }, [isWarningActive, warningCountdown]);
+
+    useEffect(() => {
+        let inactivityTimeout;
+
+        
+        if (isGameReady && isPlayerAllowedToMove() && !moveplayed.current) {
+           
+        
+            inactivityTimeout = setTimeout(() => {
+                setShowWarning(true); 
+                setWarningCountdown(60);
+                setIsWarningActive(true);
+
+            }, 15000); 
+        }
+
+        return () => clearTimeout(inactivityTimeout); 
+    }, [isPlayerAllowedToMove, isGameReady, moveplayed]);
+
+    function handleGameEnd(result) {
+        setGameOver(true);
+        setGameResult(result);
+        setOverlayType('end');
+        setShowOverlay(true);
+    }
+
        
 
     function addAvailableStyle() {
@@ -273,9 +350,7 @@ function BoardPage() {
             return newBoard;
         });
     }
-    function isPlayerAllowedToMove() {
-        return gameplayer && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
-      }
+   
 
     function handleMovePiece(piece, color, row, column) {
         
@@ -338,7 +413,9 @@ function BoardPage() {
                 setIsRedTimerRunning(false);
             }
            
-        
+            moveplayed.current = null;
+            setShowWarning(false);
+            setIsWarningActive(false);
         }
     }
     function handleUndo() {
@@ -417,16 +494,28 @@ function BoardPage() {
                 }}
             >
     <div className="app__container">
-        <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
-          <OverlayComponent
-            gameId={gameIdRef.current}
-            isVisible={showOverlay}
-            onClose={() => setShowOverlay(false)}
-            countdown={countdown}
-            showCountdown={showCountdown}
-          />
-          <Board squares={sqr} />
-        </div>
+    
+                    <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
+
+                        <OverlayComponent
+                            gameId={gameIdRef.current}
+                            isVisible={showOverlay}
+                            onClose={() => setShowOverlay(false)}
+                            countdown={countdown}
+                            showCountdown={showCountdown}
+                            type={overlayType}
+                            gameResult={gameResult}
+                        />
+                        <div className="left-container">
+                    {showWarning && (
+                        <div className="warning-banner">
+                            <p>Game will be abandoned in {warningCountdown < 10 ? `0${warningCountdown}` : warningCountdown}</p>
+                        </div>
+                    )}
+                        <Board squares={sqr} />
+                        </div>
+                    </div>
+                
 
         <div className="side-container">
           <PlayerTimer
