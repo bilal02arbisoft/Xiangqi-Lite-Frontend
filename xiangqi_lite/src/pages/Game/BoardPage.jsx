@@ -1,49 +1,56 @@
 import React, { useEffect, useRef, useCallback } from "react";
-import "css/boardpage.css";
-import useState from "react-usestateref";
 import axios from 'axios';
-import Board from "components/Board/Board";
-import { generateFEN, parseFENInput } from 'utils/FENUtils';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
+import useState from "react-usestateref";
 import { useParams, useNavigate } from 'react-router-dom';
+
+import "css/boardpage.css";
+
+import { generateFEN, parseFENInput } from 'utils/FENUtils';
+import WebSocketManager from  'utils/useWebSocket';
+import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
+
+import Board from "components/Board/Board";
+
 import { useGameTimer } from 'pages/Game/components/Timer';
 import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/components/WebsocketHandler'; 
-import WebSocketManager from  'utils/useWebSocket';
 import GameTabs from 'pages/Game/components/GameTab';
 import OverlayComponent from 'pages/Game/components/Overlay';
+import FooterComponent from 'pages/Game/components/Footer';
 import PlayerTimer from  'pages/Game/components/PlayerTimer'
+
 export const BoardContext = React.createContext();
 
 
-function BoardPage() {
+const BoardPage = () => {
     const { game_id: gameIdFromParams } = useParams(); 
     const navigate = useNavigate();
+
     const usernameRef = useRef(null); 
     const moveplayed = useRef(null);
     const gameIdRef = useRef(gameIdFromParams); 
     const [sqr, setSqr, latestSqr] = useState(initializeSquares);
     const [isFlipped, setIsFlipped, latestIsFlipped] = useState(false);
     const [selectedSquareInfo, setSelectedSquareInfo, latestSelectedSquareInfo] = useState();
-    const [availableSqr, setAvailableSqr, latestAvailableSqr] = useState([]);
-    const [counter, setCounter, latestCounter] = useState(0);
+    const [, setAvailableSqr, latestAvailableSqr] = useState([]);
+    const [, setCounter, latestCounter] = useState(0);
     const [currentTurn, setCurrentTurn, latestCurrentTurn] = useState("red");
-    const [capturedPieceList, setCapturedPieceList, latestCapturedPieceList] = useState([]);
+    const [, setCapturedPieceList, latestCapturedPieceList] = useState([]);
     const [FENOutput, setFENOutput, latestFENOutput] = useState("");
-    const [error, setError] = useState(false);
+    const [, setError] = useState(false);
     const [gameOver, setGameOver] = useState(false);
-    const [halfMoveClock, setHalfMoveClock] = useState(0);
-    const [fullMoveNumber, setFullMoveNumber] = useState(1);
-    const [sqrHistory, setSqrHistory] = useState([initializeSquares()]);
-    const [serverTime, setServerTime] = useState(Date.now());
-    const [turnStartTime, setTurnStartTime, latestTurnStartTime] = useState(null); 
+    const [, setHalfMoveClock] = useState(0);
+    const [, setFullMoveNumber] = useState(1);
+    const [, setSqrHistory] = useState([initializeSquares()]);
+    const [, setServerTime] = useState(Date.now());
+    const [, setTurnStartTime, latestTurnStartTime] = useState(null); 
     const wsManagerRef = useRef(null); 
-    const [moveHistory, setMoveHistory,latestMoveHisotry] = useState([]); 
+    const [moveHistory, setMoveHistory] = useState([]); 
     const [fenHistory, setFenHistory] = useState([]); 
     const [chatMessages, setChatMessages] = useState([]);
-    const [redPlayer, setRedPlayer] = useState(null);
-    const [blackPlayer, setBlackPlayer] = useState(null);
+    const [redPlayer, setRedPlayer,latestRed] = useState(null);
+    const [blackPlayer, setBlackPlayer,latestBlack] = useState(null);
     const [isGameReady, setIsGameReady] = useState(false);
     const [showOverlay, setShowOverlay] = useState(true); 
     const [countdown, setCountdown] = useState(5);
@@ -60,8 +67,8 @@ function BoardPage() {
     const [gameResult, setGameResult] = useState(''); 
 
     const isPlayerAllowedToMove = useCallback(() => {
-        return gameplayer && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
-    }, [gameplayer, currentTurn, isFlipped]);
+        return gameplayer &&  isGameReady && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
+    }, [gameplayer, currentTurn, isFlipped, isGameReady]);
 
     const addUser = (newUsers) => {
         setUsers(prevUsers => {
@@ -278,9 +285,6 @@ function BoardPage() {
         } else if (warningCountdown === 0) {
             setIsWarningActive(false);
             handleTimerExpire();
-            // setShowOverlay(true);
-            // setOverlayType('end');
-            // setGameResult('Game Abandoned');
             setGameOver(true);
         }
 
@@ -310,6 +314,16 @@ function BoardPage() {
         setGameResult(result);
         setOverlayType('end');
         setShowOverlay(true);
+        setIsGameReady(false);
+        setShowWarning(false);
+        setIsRedTimerRunning(false);
+        setIsBlackTimerRunning(false);
+        const winner =result
+        const loser = latestRed.current.username === winner ? latestBlack.current.username : latestRed.current.username;
+        setGameResult({
+            winner: winner,
+            loser: loser,
+        });
     }
 
        
@@ -339,19 +353,6 @@ function BoardPage() {
         }
     }
     
-    function handleClearBoard() {
-        setCounter(0);
-        setSqr((prevState) => {
-            const newBoard = [...prevState];
-            newBoard.forEach((sqr) => {
-                sqr.piece = null;
-                sqr.color = null;
-            });
-            return newBoard;
-        });
-    }
-   
-
     function handleMovePiece(piece, color, row, column) {
         
 
@@ -505,16 +506,23 @@ function BoardPage() {
                             showCountdown={showCountdown}
                             type={overlayType}
                             gameResult={gameResult}
+                            redPlayer={redPlayer}
+                            blackPlayer={blackPlayer}
                         />
                         <div className="left-container">
-                    {showWarning && (
-                        <div className="warning-banner">
-                            <p>Game will be abandoned in {warningCountdown < 10 ? `0${warningCountdown}` : warningCountdown}</p>
-                        </div>
-                    )}
-                        <Board squares={sqr} />
-                        </div>
-                    </div>
+      {showWarning && (
+        <div className="warning-banner">
+          <p>Game will be abandoned in {warningCountdown < 10 ? `0${warningCountdown}` : warningCountdown} s</p>
+        </div>
+      )}
+
+      <Board squares={sqr} />
+      
+     
+      <FooterComponent onResign={handleTimerExpire} /> 
+
+    </div>
+  </div>
                 
 
         <div className="side-container">

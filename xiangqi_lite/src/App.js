@@ -18,6 +18,8 @@ function App() {
               <Route path="login" element={<SignUpPage />} />
               <Route path="signup" element={<SignUpPage />} />
               </Route>
+         
+          <Route path="/" element={<SignUpPage />}></Route>
           <Route path="/friend" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
           <Route path="/verify-otp" element={<ProtectedRoute><VerifyOtpPage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />

@@ -7,7 +7,7 @@ function SignInSignUpTabs() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const activeTab = location.pathname.includes('login') ? 'SignIn' : 'SignUp';
+  const activeTab = location.pathname.includes('signup') ? ' SignUp' : 'SignIn';
 
   return (
     <div>
