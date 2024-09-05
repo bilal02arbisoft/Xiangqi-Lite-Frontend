@@ -25,7 +25,7 @@ export default function Piece({ pieceInfo, square }) {
   const backgroundColor = pieceInfo.color === "red" ? "rgb(222, 34, 24)" : "rgb(0, 0, 0)";
   return (
     <div
-      key={`${square}_${latestIsFlipped.current ? 'flipped' : 'normal'}`} // Dynamic key based on flip state
+      key={`${square}_${latestIsFlipped.current ? 'flipped' : 'normal'}`}
       className="piece"
       ref={drag}  
       style={{
