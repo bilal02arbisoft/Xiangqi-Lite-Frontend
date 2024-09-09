@@ -6,20 +6,21 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import 'css/boardpage.css';
+import './boardpage.css';
 
 import { generateFEN, parseFENInput } from 'utils/FENUtils';
-import WebSocketManager from 'utils/useWebSocket';
+import WebSocketManager from 'utils/WebSocket';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 
-import Board from 'components/Board/Board';
-import GameTabs from 'pages/Game/components/GameTab';
-import OverlayComponent from 'pages/Game/components/Overlay';
-import FooterComponent from 'pages/Game/components/Footer';
-import PlayerTimer from 'pages/Game/components/PlayerTimer';
+import Board from 'components/Board';
+import GameTabs from 'components/GameTabs';
+import OverlayComponent from 'components/Overlay';
+import FooterComponent from 'components/Footer';
+import PlayerTimer from 'components/PlayerTimer';
 
-import { useGameTimer } from 'pages/Game/components/Timer';
-import { handleWebSocketOpen, handleWebSocketMessage } from 'pages/Game/components/WebsocketHandler';
+import { useGameTimer } from 'Hooks/useGameTimer';
+import { handleWebSocketOpen} from 'utils/handleWebSocketOpen';
+import  {handleWebSocketMessage } from 'utils/handleWebSocketMessage';
 
 export const BoardContext = React.createContext();
 
@@ -216,7 +217,7 @@ const BoardPage = () => {
                 const token = localStorage.getItem('access_token');
                 if (!gameIdFromParams) {
                     
-                    const response = await axios.post('http://127.0.0.1:800/game/create/', null, {
+                    const response = await axios.post('http://127.0.0.1:8000/game/create/', null, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }

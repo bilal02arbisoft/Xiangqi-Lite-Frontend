@@ -1,0 +1,10 @@
+.piece {
+  width: 67px; 
+  height: 67px; 
+  border-radius: 70%;
+ 
+  margin: 0;
+}
+.highlighted {
+  border: 2px solid hsl(0, 100%, 50%); 
+}

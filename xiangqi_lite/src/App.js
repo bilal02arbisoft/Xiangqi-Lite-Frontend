@@ -6,11 +6,11 @@ import 'styles.css';
 import { AuthProvider } from 'auth/AuthProvider';
 import ProtectedRoute from 'components/ProtectedRoute';
 
-import SignUpPage from 'pages/SigninSignup/SignUpPage';
-import ProfileEditPage from 'pages/Profile/Profile';
-import VerifyOtpPage from 'pages/Profile/VerifyOtp';
-import FriendsPage from 'pages/Friend/Friend';
-import BoardPage from 'pages/Game/BoardPage';
+import SignUpPage from 'pages/SigninSignup';
+import ProfileEditPage from 'pages/Profile';
+import VerifyOtpPage from 'pages/VerifOtp';
+import FriendsPage from 'pages/Friend';
+import BoardPage from 'pages/Game';
 
 const App = () => {
   return (

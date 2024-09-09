@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SignInSignUpTabs from 'pages/SigninSignup/Components/SignInSignUpTabs';
+import SignInSignUpTabs from 'components/SigninSignUpTab';
 
 const SignUpPage = () => {
   return (
