@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PlayerCard from 'pages/Game/components/PlayerCard'; 
 
 const Viewers = ({ viewers }) => {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import SignInSignUpTabs from 'pages/SigninSignup/Components/SignInSignUpTabs';
 
 function SignUpPage() {

@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
+
+import 'css/chat.css'; 
+
 import { BoardContext } from 'pages/Game/BoardPage';
-import 'css/chat.css'; // Ensure the CSS file path is correct
+
 
 const Chat = () => {
   const { wsManagerRef, updateChatMessages, chatMessages, users, useridRef } = useContext(BoardContext);

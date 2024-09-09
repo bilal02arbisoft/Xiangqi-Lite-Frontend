@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+
 import { BoardContext } from 'pages/Game/BoardPage';
 
 function MoveHistory({ moveHistory }) {

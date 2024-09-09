@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PlayerCard from 'pages/Game/components/PlayerCard';
 
 function PlayerTimer({ isFlipped, blackTimeRemaining, redTimeRemaining, redPlayer, blackPlayer }) {

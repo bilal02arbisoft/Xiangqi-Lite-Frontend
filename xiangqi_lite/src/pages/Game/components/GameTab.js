@@ -1,7 +1,9 @@
-import React, { useState,useContext} from 'react';
+import React, { useState, useContext } from 'react';
+
+import { BoardContext } from 'pages/Game/BoardPage';
+
 import MoveHistory from 'pages/Game/components/MoveHistory';
-import { BoardContext }  from "pages/Game/BoardPage";
-import Chat from './Chat';
+import Chat from 'pages/Game/components/Chatx';
 import Viewers from 'pages/Game/components/Viewers';
 
 

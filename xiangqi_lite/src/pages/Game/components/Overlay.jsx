@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+
 import 'css/overlay.css';
+
 import PlayerCard from 'pages/Game/components/PlayerCard'; 
 
 function OverlayComponent({ gameId, isVisible, onClose, countdown, showCountdown, type, gameResult, redPlayer, blackPlayer }) {

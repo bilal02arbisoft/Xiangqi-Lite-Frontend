@@ -1,8 +1,8 @@
 import React from 'react';
-import 'css/overlay.css'; // Ensure you have the right CSS file imported
+
 
 function ConfirmationModal({ isVisible, onConfirm, onCancel }) {
-  if (!isVisible) return null; // If not visible, do not render the modal
+  if (!isVisible) return null; 
 
   return (
     <div className="confirmation-modal">
