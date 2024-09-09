@@ -5,27 +5,32 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const VerifyOtpPage = () => {
-  const [otp, setOtp] = useState('');
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate(); 
+  const [otp, setOtp] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleOtpSubmit = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    axios.post('http://127.0.0.1:8000/api/verifyotp/', { otp }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    })
-      .then(response => {
-        setMessage('Email verified successfully!');
-    
-        navigate('/profile'); 
+    const token = localStorage.getItem("access_token");
+    axios
+      .post(
+        "http://127.0.0.1:8000/api/verifyotp/",
+        { otp },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        },
+      )
+      .then((response) => {
+        setMessage("Email verified successfully!");
+
+        navigate("/profile");
       })
-      .catch(error => {
-        setMessage('Error verifying OTP. Please try again.');
-        console.error('Error verifying OTP:', error);
+      .catch((error) => {
+        setMessage("Error verifying OTP. Please try again.");
+        console.error("Error verifying OTP:", error);
       });
   };
 

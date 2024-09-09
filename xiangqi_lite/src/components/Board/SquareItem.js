@@ -1,49 +1,47 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 
-import { useDrop } from 'react-dnd';
+import { useDrop } from "react-dnd";
 
-import { BoardContext } from 'pages/Game/BoardPage';
+import { BoardContext } from "pages/Game/BoardPage";
 
-import Piece from 'components/Board/Piece';
+import Piece from "components/Board/Piece";
 
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
-      super(props);
-      this.state = { hasError: false };
+    super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error) {
-      return { hasError: true };
+    return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-      console.error("Error occurred:", error, errorInfo);
+    console.error("Error occurred:", error, errorInfo);
   }
 
   render() {
-      if (this.state.hasError) {
-          return <h1>Something went wrong.</h1>;
-      }
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
 
-      return this.props.children;
+    return this.props.children;
   }
 }
 
-export default function SquareItem({ square })
- {
+export default function SquareItem({ square }) {
   const { handleMovePiece } = useContext(BoardContext);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "PIECE",
     drop: (item) => {
-      console.log('Dropped item:', item);
+      console.log("Dropped item:", item);
       handleMovePiece(square.piece, square.color, square.row, square.column);
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   }));
-  
 
   const handleClick = () => {
     handleMovePiece(square.piece, square.color, square.row, square.column);
@@ -51,22 +49,22 @@ export default function SquareItem({ square })
 
   return (
     <ErrorBoundary>
-    <div
-      ref={drop}
-      className={`square ${square.isAvailable ? "square__available" : ""} 
-        ${square.isSelected  ? "square__selected" : ""}
+      <div
+        ref={drop}
+        className={`square ${square.isAvailable ? "square__available" : ""} 
+        ${square.isSelected ? "square__selected" : ""}
         ${isOver ? "square__highlight" : ""}`}
-      data-row={square.row}
-      data-column={square.column}
-      onClick={handleClick}
-    >
-      {square.piece !== null && (
-        <Piece
-          pieceInfo={{ ...square, id: square.pieceId }}
-          square={square}
-        />
-      )}
-    </div>
+        data-row={square.row}
+        data-column={square.column}
+        onClick={handleClick}
+      >
+        {square.piece !== null && (
+          <Piece
+            pieceInfo={{ ...square, id: square.pieceId }}
+            square={square}
+          />
+        )}
+      </div>
     </ErrorBoundary>
   );
 }

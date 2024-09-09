@@ -1,17 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react';
-
-import 'css/chat.css'; 
-
-import { BoardContext } from 'pages/Game/BoardPage';
-
+import React, { useState, useContext, useEffect } from "react";
+import { BoardContext } from "pages/Game/BoardPage";
+import "css/chat.css";
+import config from "config";
 
 const Chat = () => {
-  const { wsManagerRef, updateChatMessages, chatMessages, users, useridRef } = useContext(BoardContext);
-  const [message, setMessage] = useState('');
+  const { wsManagerRef, updateChatMessages, chatMessages, users, useridRef } =
+    useContext(BoardContext);
+  const [message, setMessage] = useState("");
 
   const getFormattedDate = () => {
-    const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
-    return new Date().toLocaleDateString('en-US', options);
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    };
+    return new Date().toLocaleDateString("en-US", options);
   };
 
   const [currentDate, setCurrentDate] = useState(getFormattedDate());
@@ -24,21 +28,21 @@ const Chat = () => {
   }, []);
 
   const handleSendMessage = (event) => {
-    if (event.key === 'Enter' && message.trim()) {
+    if (event.key === "Enter" && message.trim()) {
       event.preventDefault();
       const chatMessage = {
-        type: 'game.chat',
+        type: "game.chat",
         message,
         timestamp: new Date().toISOString(),
         user_id: useridRef.current,
-        isSent: 'sent'
+        isSent: "sent",
       };
       updateChatMessages(chatMessage);
       try {
         wsManagerRef.current.sendMessage(JSON.stringify(chatMessage));
-        setMessage('');
+        setMessage("");
       } catch (error) {
-        console.error('Failed to send message:', error);
+        console.error("Failed to send message:", error);
       }
     }
   };
@@ -52,22 +56,33 @@ const Chat = () => {
           console.log("its user", user);
 
           return (
-            <div key={index} className={`message ${msg.isSent === 'sent' ? 'sent' : 'received'}`}>
+            <div
+              key={index}
+              className={`message ${msg.isSent === "sent" ? "sent" : "received"}`}
+            >
               <img
-                src={user ? `http://127.0.0.1:8000${user.profile_picture}` : 'default_profile.png'}
+                src={
+                  user
+                    ? `${config.BACKEND_HTTP_URL}${user.profile_picture}`
+                    : "default_profile.png"
+                }
                 alt="User Profile"
                 className="profile-picture"
               />
               <div className="message-content">
                 <div className="message-info">
-                  <strong className="username">{user ? user.username : 'Unknown User'}</strong>
+                  <strong className="username">
+                    {user ? user.username : "Unknown User"}
+                  </strong>
                   <p className="message-text">{msg.message}</p>
                 </div>
-               
               </div>
               <div className="timestamp">
-                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </div>
+                {new Date(msg.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </div>
             </div>
           );
         })}

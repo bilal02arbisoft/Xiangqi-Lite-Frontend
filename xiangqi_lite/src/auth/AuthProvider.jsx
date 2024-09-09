@@ -1,14 +1,14 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import React, { createContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   const checkAuth = () => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token) {
       const decodedToken = jwtDecode(token);
       const isExpired = decodedToken.exp * 1000 < new Date().getTime();
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         logout();
       }
     }
-    setLoading(false); 
+    setLoading(false);
   };
 
   const login = (token) => {
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem("access_token");
     setIsAuthenticated(false);
   };
 
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     const expirationTime = decodedToken.exp * 1000 - new Date().getTime();
     setTimeout(() => {
       logout();
-      alert('Session has expired. Please login again.');
+      alert("Session has expired. Please login again.");
     }, expirationTime);
   };
 

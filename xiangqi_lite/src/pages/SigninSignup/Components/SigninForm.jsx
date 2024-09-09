@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 
-import { useAuth } from 'auth/useAuth';
+import InputField from "components/InputField";
+import Button from "components/Button";
 
-import InputField from 'components/InputField';
-import Button from 'components/Button';
+import { useAuth } from "auth/useAuth";
+
+import config from "config";
 
 function SignInForm() {
   const navigate = useNavigate();
@@ -13,13 +15,13 @@ function SignInForm() {
   const location = useLocation();
   const { from } = location.state || { from: { pathname: "/profile" } };
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,8 +30,8 @@ function SignInForm() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.username) newErrors.username = 'Username is required';
-    if (!formData.password) newErrors.password = 'Password is required';
+    if (!formData.username) newErrors.username = "Username is required";
+    if (!formData.password) newErrors.password = "Password is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -40,27 +42,25 @@ function SignInForm() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/token/', {
-        method: 'POST',
+      const response = await fetch(`${config.BACKEND_HTTP_URL}/api/token/`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-        credentials: 'include',
+        credentials: "include",
       });
 
       const result = await response.json();
       if (response.ok) {
-      
         const { access_token: access, refresh_token: refresh } = result;
-        console.log("access token: "+result)
+        console.log("access token: " + result);
 
-        
-        localStorage.setItem('access_token', access);
-        localStorage.setItem('refresh_token', refresh);
+        localStorage.setItem("access_token", access);
+        localStorage.setItem("refresh_token", refresh);
 
-        setMessage('Sign in successful!');
-        login(access)
+        setMessage("Sign in successful!");
+        login(access);
         navigate(from.pathname, { replace: true });
       } else {
         const newErrors = {};
@@ -68,36 +68,39 @@ function SignInForm() {
         if (result.password) newErrors.password = result.password[0];
 
         setErrors(newErrors);
-        setMessage(result.detail || 'Sign in failed');
+        setMessage(result.detail || "Sign in failed");
       }
     } catch (error) {
-      setMessage('An error occurred');
+      setMessage("An error occurred");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form className="bg-white p-8 rounded shadow-md w-full max-w-md" onSubmit={handleSubmit}>
-      <InputField 
-        label="Username" 
-        placeholder="Username or Email" 
-        name="username" 
-        value={formData.username} 
-        onChange={handleChange} 
+    <form
+      className="bg-white p-8 rounded shadow-md w-full max-w-md"
+      onSubmit={handleSubmit}
+    >
+      <InputField
+        label="Username"
+        placeholder="Username or Email"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
         error={errors.username}
       />
-      <InputField 
-        label="Password" 
-        placeholder="Password" 
-        name="password" 
-        type="password" 
-        value={formData.password} 
-        onChange={handleChange} 
+      <InputField
+        label="Password"
+        placeholder="Password"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
         error={errors.password}
       />
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? 'Signing In...' : 'Sign In'}
+        {isSubmitting ? "Signing In..." : "Sign In"}
       </Button>
       {message && <p className="mt-4 text-red-600">{message}</p>}
     </form>
@@ -105,4 +108,3 @@ function SignInForm() {
 }
 
 export default SignInForm;
-

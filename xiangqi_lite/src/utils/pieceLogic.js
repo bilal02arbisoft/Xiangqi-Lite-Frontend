@@ -51,7 +51,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) + 1,
-          parseInt(column) + 1
+          parseInt(column) + 1,
         );
       }
       if (palace.column.includes(parseInt(column) - 1)) {
@@ -60,7 +60,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) + 1,
-          parseInt(column) - 1
+          parseInt(column) - 1,
         );
       }
     }
@@ -72,7 +72,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) - 1,
-          parseInt(column) + 1
+          parseInt(column) + 1,
         );
       }
       if (palace.column.includes(parseInt(column) - 1)) {
@@ -81,7 +81,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) - 1,
-          parseInt(column) - 1
+          parseInt(column) - 1,
         );
       }
     }
@@ -94,7 +94,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) + 1,
-          parseInt(column) + 1
+          parseInt(column) + 1,
         );
       }
       if (palace.column.includes(parseInt(column) - 1)) {
@@ -103,7 +103,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) + 1,
-          parseInt(column) - 1
+          parseInt(column) - 1,
         );
       }
     }
@@ -115,7 +115,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) - 1,
-          parseInt(column) + 1
+          parseInt(column) + 1,
         );
       }
       if (palace.column.includes(parseInt(column) - 1)) {
@@ -124,7 +124,7 @@ export function advisor(color, row, column) {
         addAvailableSqrId(
           availableSqrId,
           parseInt(row) - 1,
-          parseInt(column) - 1
+          parseInt(column) - 1,
         );
       }
     }
@@ -138,10 +138,10 @@ export function bishop(sqr, color, row, column) {
     if (row < 5) {
       // if the bishop is at row 1 or row 3
       const topLeftObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) - 1}`
+        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) - 1}`,
       );
       const topRightObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) + 1}`
+        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) + 1}`,
       );
       if (column != 1) {
         if (topLeftObstacle.piece == null) {
@@ -149,7 +149,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) + 2,
-            parseInt(column) - 2
+            parseInt(column) - 2,
           );
         }
       }
@@ -158,7 +158,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) + 2,
-            parseInt(column) + 2
+            parseInt(column) + 2,
           );
         }
       }
@@ -166,10 +166,10 @@ export function bishop(sqr, color, row, column) {
     if (row > 1) {
       // if the bishop is at row 3 or row 5
       const bottomLeftObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) - 1}`
+        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) - 1}`,
       );
       const bottomRightObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) + 1}`
+        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) + 1}`,
       );
 
       if (column != 1) {
@@ -178,7 +178,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) - 2,
-            parseInt(column) - 2
+            parseInt(column) - 2,
           );
         }
       }
@@ -187,7 +187,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) - 2,
-            parseInt(column) + 2
+            parseInt(column) + 2,
           );
         }
       }
@@ -196,10 +196,10 @@ export function bishop(sqr, color, row, column) {
     if (row < 10) {
       // if the bishop is at row 6 or row 8
       const topLeftObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) - 1}`
+        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) - 1}`,
       );
       const topRightObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) + 1}`
+        (s) => s.id === `${parseInt(row) + 1}-${parseInt(column) + 1}`,
       );
       if (column != 1) {
         if (topLeftObstacle.piece == null) {
@@ -207,7 +207,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) + 2,
-            parseInt(column) - 2
+            parseInt(column) - 2,
           );
         }
       }
@@ -216,7 +216,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) + 2,
-            parseInt(column) + 2
+            parseInt(column) + 2,
           );
         }
       }
@@ -224,10 +224,10 @@ export function bishop(sqr, color, row, column) {
     if (row > 6) {
       // if the bishop is at row 8 or row 10
       const bottomLeftObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) - 1}`
+        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) - 1}`,
       );
       const bottomRightObstacle = sqr.find(
-        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) + 1}`
+        (s) => s.id === `${parseInt(row) - 1}-${parseInt(column) + 1}`,
       );
 
       if (column != 1) {
@@ -236,7 +236,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) - 2,
-            parseInt(column) - 2
+            parseInt(column) - 2,
           );
         }
       }
@@ -245,7 +245,7 @@ export function bishop(sqr, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             parseInt(row) - 2,
-            parseInt(column) + 2
+            parseInt(column) + 2,
           );
         }
       }
@@ -394,7 +394,7 @@ export function cannon(ary, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             havePiece[1].row,
-            havePiece[1].column
+            havePiece[1].column,
           );
       }
     } else if (havePiece.length == 0) {
@@ -419,7 +419,7 @@ export function cannon(ary, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             havePiece[1].row,
-            havePiece[1].column
+            havePiece[1].column,
           );
       }
     } else if (havePiece.length == 0) {
@@ -448,7 +448,7 @@ export function cannon(ary, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             havePiece[1].row,
-            havePiece[1].column
+            havePiece[1].column,
           );
       }
     } else if (havePiece.length == 0) {
@@ -478,7 +478,7 @@ export function cannon(ary, color, row, column) {
           addAvailableSqrId(
             availableSqrId,
             havePiece[1].row,
-            havePiece[1].column
+            havePiece[1].column,
           );
       }
     } else if (havePiece.length == 0) {
@@ -490,211 +490,235 @@ export function cannon(ary, color, row, column) {
   }
   return availableSqrId;
 }
-export function knight(sqr, row, column){
-    const availableSqrId = []
-    const upObstacle = sqr.find(s => s.id === `${row + 1}-${column}`)
-    const downObstacle = sqr.find(s => s.id === `${row -1}-${column}`)
-    const leftObstacle = sqr.find(s => s.id === `${row}-${column - 1}`)
-    const rightObstacle = sqr.find(s => s.id === `${row}-${column + 1}`)
+export function knight(sqr, row, column) {
+  const availableSqrId = [];
+  const upObstacle = sqr.find((s) => s.id === `${row + 1}-${column}`);
+  const downObstacle = sqr.find((s) => s.id === `${row - 1}-${column}`);
+  const leftObstacle = sqr.find((s) => s.id === `${row}-${column - 1}`);
+  const rightObstacle = sqr.find((s) => s.id === `${row}-${column + 1}`);
 
-    if(row < 9 && upObstacle.piece == null ){
-        if(column > 1){
-            addAvailableSqrId(availableSqrId ,row + 2 , column - 1)
-        };
-        if(column < 9){
-            addAvailableSqrId(availableSqrId ,row + 2 , column + 1)
-        }
-    };
-    if(row > 2 && downObstacle.piece == null ){
-        if(column > 1){
-            addAvailableSqrId(availableSqrId ,row - 2 , column - 1)
-        };
-        if(column < 9){
-            addAvailableSqrId(availableSqrId ,row - 2 , column + 1)
-        }
-    };
-    if(column > 2 && leftObstacle.piece == null){
-        if(row > 1){
-            addAvailableSqrId(availableSqrId ,row - 1 , column - 2)
-        };
-        if(row < 10){
-            addAvailableSqrId(availableSqrId ,row + 1 , column - 2)
-        }
-    };
-    if(column < 8 && rightObstacle.piece == null){
-        if(row > 1){
-            addAvailableSqrId(availableSqrId ,row - 1 , column + 2)
-        };
-        if(row < 10){
-            addAvailableSqrId(availableSqrId ,row + 1 , column + 2)
-        }
-    };
-    return availableSqrId
+  if (row < 9 && upObstacle.piece == null) {
+    if (column > 1) {
+      addAvailableSqrId(availableSqrId, row + 2, column - 1);
+    }
+    if (column < 9) {
+      addAvailableSqrId(availableSqrId, row + 2, column + 1);
+    }
+  }
+  if (row > 2 && downObstacle.piece == null) {
+    if (column > 1) {
+      addAvailableSqrId(availableSqrId, row - 2, column - 1);
+    }
+    if (column < 9) {
+      addAvailableSqrId(availableSqrId, row - 2, column + 1);
+    }
+  }
+  if (column > 2 && leftObstacle.piece == null) {
+    if (row > 1) {
+      addAvailableSqrId(availableSqrId, row - 1, column - 2);
+    }
+    if (row < 10) {
+      addAvailableSqrId(availableSqrId, row + 1, column - 2);
+    }
+  }
+  if (column < 8 && rightObstacle.piece == null) {
+    if (row > 1) {
+      addAvailableSqrId(availableSqrId, row - 1, column + 2);
+    }
+    if (row < 10) {
+      addAvailableSqrId(availableSqrId, row + 1, column + 2);
+    }
+  }
+  return availableSqrId;
 }
 
 //check danger squares for king
-export function checkDanger(sqr,color,row,column){
-    const vertical = sqr.filter(s => s.column === column);
-    const horizontal = sqr.filter(s => s.row === row);
+export function checkDanger(sqr, color, row, column) {
+  const vertical = sqr.filter((s) => s.column === column);
+  const horizontal = sqr.filter((s) => s.row === row);
 
-    //threats from top
-    if(row < 10){
-        const piecesAbove = vertical.filter(item => item.piece != null && parseInt(item.row) > row);
-        piecesAbove.sort((a,b) => parseInt(a.row) - parseInt(b.row)) //from bottom to top
-        if (piecesAbove.length > 0) {
-            if(piecesAbove[0].color != color){
-                if(piecesAbove[0].piece == 'rook' || piecesAbove[0].piece == 'king'){
-                    return true
-                };
-                if(piecesAbove[0].piece == 'pawn'){            // if there is an black pawn 1 step away in front(only applicable for red)
-                    if(color == 'red' && parseInt(piecesAbove[0].row) == row + 1){
-                        return true
-                    };
-                };
-            };
-            if(piecesAbove.length > 1){
-                if(piecesAbove[1].color != color){
-                    if(piecesAbove[1].piece == 'cannon'){
-                        return true
-                    };
-                };
-            }
+  //threats from top
+  if (row < 10) {
+    const piecesAbove = vertical.filter(
+      (item) => item.piece != null && parseInt(item.row) > row,
+    );
+    piecesAbove.sort((a, b) => parseInt(a.row) - parseInt(b.row)); //from bottom to top
+    if (piecesAbove.length > 0) {
+      if (piecesAbove[0].color != color) {
+        if (piecesAbove[0].piece == "rook" || piecesAbove[0].piece == "king") {
+          return true;
         }
-    };
-        //threats from bottom
-        if(row > 1){
-            const piecesBelow = vertical.filter(item => item.piece != null && parseInt(item.row) < row);
-            piecesBelow.sort((a,b) => parseInt(b.row - parseInt(a.row))) //from bottom to top
-            if (piecesBelow.length > 0) {
-                if(piecesBelow[0].color != color){
-                    if(piecesBelow[0].piece == 'rook' || piecesBelow[0].piece == 'king'){
-                        return true
-                    };
-                    if(piecesBelow[0].piece == 'pawn'){            // if there is an black pawn 1 step away in front(only applicable for red)
-                        if(color == 'black' && parseInt(piecesBelow[0].row) == row - 1){
-                            return true
-                        };
-                    };
-                };
-                if(piecesBelow.length > 1){
-                    if(piecesBelow[1].color != color){
-                        if(piecesBelow[1].piece == 'cannon'){
-                            return true
-                        };
-                    };
-                }
-            }
-        };
-        //threats from the left
-        if(column > 1){
-            const piecesLeft = horizontal.filter(item => item.piece != null && parseInt(item.column) < column);
-            piecesLeft.sort((a,b) => parseInt(b.column) - parseInt(a.column)); // sort from right to left
-            if (piecesLeft.length > 0) {
-                if(piecesLeft[0].color != color){
-                    if(piecesLeft[0].piece == 'rook'){
-                        return true
-                    };
-                    if(piecesLeft[0].piece == 'pawn'){            // if there is an black pawn 1 step away in front(only applicable for red)
-                        if(parseInt(piecesLeft[0].column) == column - 1){
-                            return true
-                        };
-                    };
-                };
-                if(piecesLeft.length > 1){
-                    if(piecesLeft[1].color != color){
-                        if(piecesLeft[1].piece == 'cannon'){
-                            return true
-                        };
-                    };
-                }
-            }
-        };
-        //threats from the right
-        if(column < 9){
-            const piecesRight = horizontal.filter(item => item.piece != null && parseInt(item.column) > column);
-            piecesRight.sort((a,b) => parseInt(a.column) - parseInt(b.column)); // sort from left to right
-            if (piecesRight.length > 0) {
-                if(piecesRight[0].color != color){
-                    if(piecesRight[0].piece == 'rook'){
-                        return true
-                    };
-                    if(piecesRight[0].piece == 'pawn'){            // if there is an black pawn 1 step away in front(only applicable for red)
-                        if(parseInt(piecesRight[0].column) == column + 1){
-                            return true
-                        };
-                    };
-                };
-                if(piecesRight.length > 1){
-                    if(piecesRight[1].color != color){
-                        if(piecesRight[1].piece == 'cannon'){
-                            return true
-                        };
-                    };
-                }
-            }
-        };
-        // threats from the horse
-        const topLeftObstacle = sqr.find(s => s.id === `${row + 1}-${column - 1}`)
-        const bottomLeftObstacle = sqr.find(s => s.id === `${row - 1}-${column - 1}`)
+        if (piecesAbove[0].piece == "pawn") {
+          // if there is an black pawn 1 step away in front(only applicable for red)
+          if (color == "red" && parseInt(piecesAbove[0].row) == row + 1) {
+            return true;
+          }
+        }
+      }
+      if (piecesAbove.length > 1) {
+        if (piecesAbove[1].color != color) {
+          if (piecesAbove[1].piece == "cannon") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  //threats from bottom
+  if (row > 1) {
+    const piecesBelow = vertical.filter(
+      (item) => item.piece != null && parseInt(item.row) < row,
+    );
+    piecesBelow.sort((a, b) => parseInt(b.row - parseInt(a.row))); //from bottom to top
+    if (piecesBelow.length > 0) {
+      if (piecesBelow[0].color != color) {
+        if (piecesBelow[0].piece == "rook" || piecesBelow[0].piece == "king") {
+          return true;
+        }
+        if (piecesBelow[0].piece == "pawn") {
+          // if there is an black pawn 1 step away in front(only applicable for red)
+          if (color == "black" && parseInt(piecesBelow[0].row) == row - 1) {
+            return true;
+          }
+        }
+      }
+      if (piecesBelow.length > 1) {
+        if (piecesBelow[1].color != color) {
+          if (piecesBelow[1].piece == "cannon") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  //threats from the left
+  if (column > 1) {
+    const piecesLeft = horizontal.filter(
+      (item) => item.piece != null && parseInt(item.column) < column,
+    );
+    piecesLeft.sort((a, b) => parseInt(b.column) - parseInt(a.column)); // sort from right to left
+    if (piecesLeft.length > 0) {
+      if (piecesLeft[0].color != color) {
+        if (piecesLeft[0].piece == "rook") {
+          return true;
+        }
+        if (piecesLeft[0].piece == "pawn") {
+          // if there is an black pawn 1 step away in front(only applicable for red)
+          if (parseInt(piecesLeft[0].column) == column - 1) {
+            return true;
+          }
+        }
+      }
+      if (piecesLeft.length > 1) {
+        if (piecesLeft[1].color != color) {
+          if (piecesLeft[1].piece == "cannon") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  //threats from the right
+  if (column < 9) {
+    const piecesRight = horizontal.filter(
+      (item) => item.piece != null && parseInt(item.column) > column,
+    );
+    piecesRight.sort((a, b) => parseInt(a.column) - parseInt(b.column)); // sort from left to right
+    if (piecesRight.length > 0) {
+      if (piecesRight[0].color != color) {
+        if (piecesRight[0].piece == "rook") {
+          return true;
+        }
+        if (piecesRight[0].piece == "pawn") {
+          // if there is an black pawn 1 step away in front(only applicable for red)
+          if (parseInt(piecesRight[0].column) == column + 1) {
+            return true;
+          }
+        }
+      }
+      if (piecesRight.length > 1) {
+        if (piecesRight[1].color != color) {
+          if (piecesRight[1].piece == "cannon") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  // threats from the horse
+  const topLeftObstacle = sqr.find((s) => s.id === `${row + 1}-${column - 1}`);
+  const bottomLeftObstacle = sqr.find(
+    (s) => s.id === `${row - 1}-${column - 1}`,
+  );
 
-        const topRightObstacle = sqr.find(s => s.id === `${row + 1}-${column + 1}`)
-        const bottomRightObstacle = sqr.find(s => s.id === `${row - 1}-${column + 1}`)
+  const topRightObstacle = sqr.find((s) => s.id === `${row + 1}-${column + 1}`);
+  const bottomRightObstacle = sqr.find(
+    (s) => s.id === `${row - 1}-${column + 1}`,
+  );
 
-        function checkKnightSquare(r,c){
-            const target = sqr.find(s => s.id === `${r}-${c}`)
-            if(target.piece === 'knight' && target.color !== color){  //check if there is a knight on sqr(r,c))
-                return true
-            }else{
-                return false
-            }
-        };
-        if(row < 9){
-            if(column > 1 && topLeftObstacle.piece == null ){        // if no obstacle on the top left
-                if(checkKnightSquare(row + 2, column - 1)){
-                    return true
-                }
-            };
-            if(column < 9 && topRightObstacle.piece == null){        // if no obstacle on the top right
-                if(checkKnightSquare(row + 2, column + 1)){
-                    return true
-                }
-            };
-        };
-        if(row > 2){
-            if(column > 1 && bottomLeftObstacle.piece == null){        // if no obstacle on the bottom left
-                if(checkKnightSquare(row - 2, column - 1)){
-                    return true
-                }
-            };
-            if(column < 9 && bottomRightObstacle.piece == null){        // if no obstacle on the bottom right
-                if(checkKnightSquare(row - 2, column + 1)){
-                    return true
-                }
-            };
-        };
-        if(column > 2){
-            if( row < 10 && topLeftObstacle.piece == null){        // if no obstacle on the top left
-                if(checkKnightSquare(row + 1, column - 2)){
-                    return true
-                }
-            };
-            if(row > 1 && bottomLeftObstacle.piece == null ){        // if no obstacle on the bottom left
-                if(checkKnightSquare(row - 1, column - 2)){
-                    return true
-                }
-            };
-        };
-        if(column < 8){
-            if(row < 10 && topRightObstacle.piece == null ){        // if no obstacle on the top right
-                if(checkKnightSquare(row + 1, column + 2)){
-                    return true
-                }
-            };
-            if(row > 1 && bottomRightObstacle.piece == null){        // if no obstacle on the top right
-                if(checkKnightSquare(row - 1, column + 2)){
-                    return true
-                }
-            };
-        };
-};
-
+  function checkKnightSquare(r, c) {
+    const target = sqr.find((s) => s.id === `${r}-${c}`);
+    if (target.piece === "knight" && target.color !== color) {
+      //check if there is a knight on sqr(r,c))
+      return true;
+    } else {
+      return false;
+    }
+  }
+  if (row < 9) {
+    if (column > 1 && topLeftObstacle.piece == null) {
+      // if no obstacle on the top left
+      if (checkKnightSquare(row + 2, column - 1)) {
+        return true;
+      }
+    }
+    if (column < 9 && topRightObstacle.piece == null) {
+      // if no obstacle on the top right
+      if (checkKnightSquare(row + 2, column + 1)) {
+        return true;
+      }
+    }
+  }
+  if (row > 2) {
+    if (column > 1 && bottomLeftObstacle.piece == null) {
+      // if no obstacle on the bottom left
+      if (checkKnightSquare(row - 2, column - 1)) {
+        return true;
+      }
+    }
+    if (column < 9 && bottomRightObstacle.piece == null) {
+      // if no obstacle on the bottom right
+      if (checkKnightSquare(row - 2, column + 1)) {
+        return true;
+      }
+    }
+  }
+  if (column > 2) {
+    if (row < 10 && topLeftObstacle.piece == null) {
+      // if no obstacle on the top left
+      if (checkKnightSquare(row + 1, column - 2)) {
+        return true;
+      }
+    }
+    if (row > 1 && bottomLeftObstacle.piece == null) {
+      // if no obstacle on the bottom left
+      if (checkKnightSquare(row - 1, column - 2)) {
+        return true;
+      }
+    }
+  }
+  if (column < 8) {
+    if (row < 10 && topRightObstacle.piece == null) {
+      // if no obstacle on the top right
+      if (checkKnightSquare(row + 1, column + 2)) {
+        return true;
+      }
+    }
+    if (row > 1 && bottomRightObstacle.piece == null) {
+      // if no obstacle on the top right
+      if (checkKnightSquare(row - 1, column + 2)) {
+        return true;
+      }
+    }
+  }
+}
