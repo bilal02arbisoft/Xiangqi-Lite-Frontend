@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { BoardContext } from 'pages/Game/BoardPage';
 
 import MoveHistory from 'pages/Game/components/MoveHistory';
-import Chat from 'pages/Game/components/Chatx';
+import Chat from 'pages/Game/components/Chat';
 import Viewers from 'pages/Game/components/Viewers';
 
 

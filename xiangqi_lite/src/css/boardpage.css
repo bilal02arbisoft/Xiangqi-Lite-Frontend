@@ -3,9 +3,6 @@
 @import "buttons.css";
 @import "../components/Board/css/squares.css";
 @import "../components/Board/css/board.css";
-@import "../components/BoardInfo/css/board-info.css";
-@import "../components/BoardInfo/css/captured-piece.css";
-@import "../components/BoardInfo/css/FEN-generator.css";
 @import "../components/Board/css/piece.css";
 
 *, *::after, *::before {
