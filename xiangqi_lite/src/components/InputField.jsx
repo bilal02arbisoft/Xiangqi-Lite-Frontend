@@ -1,6 +1,6 @@
 import React from 'react';
 
-function InputField({ label, placeholder, type = 'text', name, value, onChange, error }) {
+const InputField = ({ label, placeholder, type = 'text', name, value, onChange, error })=> {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 mb-2">{label}</label>

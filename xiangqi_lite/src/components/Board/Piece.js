@@ -5,7 +5,7 @@ import { useDrag } from 'react-dnd';
 import { BoardContext }  from "pages/Game/BoardPage";
 
 
-export default function Piece({ pieceInfo, square }) {
+const Piece = ({ pieceInfo, square }) => {
   const {latestIsFlipped} = useContext(BoardContext);
 
 
@@ -48,3 +48,4 @@ export default function Piece({ pieceInfo, square }) {
     </div>
   );
 }
+export default Piece

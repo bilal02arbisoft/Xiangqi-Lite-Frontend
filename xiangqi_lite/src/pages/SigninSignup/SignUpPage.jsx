@@ -2,7 +2,7 @@ import React from 'react';
 
 import SignInSignUpTabs from 'pages/SigninSignup/Components/SignInSignUpTabs';
 
-function SignUpPage() {
+const SignUpPage = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-[url('https://d2g1zxtf4l76di.cloudfront.net/images/new-ui/light-bg.svg')] bg-cover bg-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">

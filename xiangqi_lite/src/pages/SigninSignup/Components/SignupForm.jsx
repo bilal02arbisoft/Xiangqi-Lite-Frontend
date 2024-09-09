@@ -4,7 +4,7 @@ import InputField from 'components/InputField';
 import SelectField from 'components/SelectField';
 import Button from 'components/Button';
 
-function SignUpForm() {
+const SignUpForm = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',

@@ -122,16 +122,16 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
 
   
 
-  function convertToUCI(row, column) {
-    // Convert numerical row and column to UCI notation
+  const convertToUCI = (row, column) => {
+    
     const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','i'];
-    const uciColumn = columnLetters[column - 1]; // Column is assumed to be 1-based
-    const uciRow = row.toString(); // Row is already in string format
+    const uciColumn = columnLetters[column - 1]; 
+    const uciRow = row.toString();
   
     return uciColumn + uciRow;
   }
   
-  export function MovePiece(
+  export const MovePiece = (
     piece,
     color,
     row,
@@ -155,7 +155,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     setSelectedSquareInfo,
     moveplayed
 
-  ) {
+  ) => {
     if (counter % 2 === 0) {
       if (color === currentTurn) {
         handleSelectSquare(row, column);
@@ -172,12 +172,12 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         addAvailableStyle();
         return false;
       } else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
-        // Generate UCI move notation
+       
         const startUCI = convertToUCI(selectedSquareInfo.row, selectedSquareInfo.column);
         const endUCI = convertToUCI(row, column);
         const uciMove = startUCI + endUCI;
   
-        // Log the UCI move
+      
         console.log(`Move played: ${uciMove}`);
         moveplayed.current = uciMove
   
@@ -193,7 +193,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
           setHalfMoveClock((prev) => prev + 1);
         }
   
-        // Update the board state
+       
         setSqr((prevState) => {
           const newSqr = prevState.map((s) => ({ ...s }));
   
@@ -204,7 +204,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             (s) => s.id === `${row}-${column}`
           );
   
-          // Update the state of all squares
+         
           newSqr.forEach((s, index) => {
             newSqr[index] = {
               ...s,
@@ -214,7 +214,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             };
           });
   
-          // Update the start square
+         
           newSqr[startIndex] = {
             ...newSqr[startIndex],
             piece: null,
@@ -223,7 +223,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             isSelected: false
           };
   
-          // Update the destination square
+         
           newSqr[destinationIndex] = {
             ...newSqr[destinationIndex],
             piece: selectedSquareInfo.piece,
@@ -262,7 +262,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
 
 
  
-export function checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver) {
+export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver) => {
     const pieceList = sqr.filter(
       (p) => p.color === currentTurn && p.piece != null
     );

@@ -1,4 +1,4 @@
-function addAvailableSqrId(ary, row, column) {
+const addAvailableSqrId = (ary, row, column) => {
   ary.push(`${row}-${column}`);
 }
 const palace = {
@@ -9,7 +9,7 @@ const palace = {
   column: [4, 5, 6],
 };
 
-export function pawn(color, row, column) {
+export const pawn = (color, row, column) => {
   const availableSqrId = [];
   if (color === "red") {
     if (row >= 4 && row <= 9) {
@@ -40,7 +40,7 @@ export function pawn(color, row, column) {
   return availableSqrId;
 }
 
-export function advisor(color, row, column) {
+export const advisor = (color, row, column) => {
   const availableSqrId = [];
   if (color === "red") {
     if (palace.redRow.includes(parseInt(row) + 1)) {
@@ -132,7 +132,7 @@ export function advisor(color, row, column) {
   return availableSqrId;
 }
 
-export function bishop(sqr, color, row, column) {
+export const bishop = (sqr, color, row, column) => {
   const availableSqrId = [];
   if (color === "red") {
     if (row < 5) {
@@ -253,7 +253,7 @@ export function bishop(sqr, color, row, column) {
   }
   return availableSqrId;
 }
-export function king(color, row, column) {
+export const king = (color, row, column) => {
   const availableSqrId = [];
   if (column > 4) {
     // if the king is at 5th or 6th column
@@ -291,7 +291,7 @@ export function king(color, row, column) {
 
   return availableSqrId;
 }
-export function rook(ary, row, column) {
+export const rook = (ary, row, column) => {
   const availableSqrId = [];
   const horizontal = ary.filter((s) => s.row === row);
   const vertical = ary.filter((s) => s.column === column);
@@ -373,7 +373,7 @@ export function rook(ary, row, column) {
 
   return availableSqrId;
 }
-export function cannon(ary, color, row, column) {
+export const cannon = (ary, color, row, column) => {
   const availableSqrId = [];
   const horizontalC = ary.filter((s) => s.row === row);
   const verticalC = ary.filter((s) => s.column === column);
@@ -490,7 +490,7 @@ export function cannon(ary, color, row, column) {
   }
   return availableSqrId;
 }
-export function knight(sqr, row, column){
+export const knight = (sqr, row, column) =>{
     const availableSqrId = []
     const upObstacle = sqr.find(s => s.id === `${row + 1}-${column}`)
     const downObstacle = sqr.find(s => s.id === `${row -1}-${column}`)
@@ -533,7 +533,7 @@ export function knight(sqr, row, column){
 }
 
 //check danger squares for king
-export function checkDanger(sqr,color,row,column){
+export const checkDanger = (sqr,color,row,column) =>{
     const vertical = sqr.filter(s => s.column === column);
     const horizontal = sqr.filter(s => s.row === row);
 

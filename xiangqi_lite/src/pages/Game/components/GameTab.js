@@ -7,11 +7,11 @@ import Chat from 'pages/Game/components/Chat';
 import Viewers from 'pages/Game/components/Viewers';
 
 
-function TabPanel({ children }) {
+const TabPanel = ({ children }) => {
     return <div className="tab-content">{children}</div>;
 }
 
- export default function GameTabs() {
+ const GameTabs = ()=> {
     const {moveHistory} = useContext(BoardContext);
     const {viewers} = useContext(BoardContext);
     const [activeTab, setActiveTab] = useState('chat');
@@ -43,5 +43,7 @@ function TabPanel({ children }) {
         </div>
     );
 }
+export default GameTabs;
+
 
 

@@ -1,15 +1,18 @@
 import React from 'react';
-import 'styles.css';
-import SignUpPage from 'pages/SigninSignup/SignUpPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ProfileEditPage from "pages/Profile/Profile";
-import VerifyOtpPage from 'pages/Profile/VerifyOtp';
-import FriendsPage from 'pages/Friend/Friend'
-import BoardPage from 'pages/Game/BoardPage';
+
+import 'styles.css';
+
 import { AuthProvider } from 'auth/AuthProvider';
 import ProtectedRoute from 'components/ProtectedRoute';
 
-function App() {
+import SignUpPage from 'pages/SigninSignup/SignUpPage';
+import ProfileEditPage from 'pages/Profile/Profile';
+import VerifyOtpPage from 'pages/Profile/VerifyOtp';
+import FriendsPage from 'pages/Friend/Friend';
+import BoardPage from 'pages/Game/BoardPage';
+
+const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>

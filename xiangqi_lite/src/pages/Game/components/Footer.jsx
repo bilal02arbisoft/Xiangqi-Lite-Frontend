@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import ConfirmationModal from "pages/Game/components/Confirmation"; 
 
-function FooterComponent({ onResign }) {
+const FooterComponent = ({ onResign }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleResignClick = () => {

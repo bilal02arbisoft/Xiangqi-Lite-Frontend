@@ -7,7 +7,7 @@ import { useAuth } from 'auth/useAuth';
 import InputField from 'components/InputField';
 import Button from 'components/Button';
 
-function SignInForm() {
+const SignInForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const location = useLocation();

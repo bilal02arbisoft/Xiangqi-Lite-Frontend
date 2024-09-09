@@ -24,10 +24,10 @@ class WebSocketManager {
       }
 
       const options = {
-          automaticOpen: true,  // Automatically reconnect if the connection is closed
-          reconnectInterval: 1000,  // Time in milliseconds to delay before attempting to reconnect
-          maxReconnectAttempts: 10,  // Maximum number of reconnection attempts
-          connectionTimeout: 4000,  // Time in milliseconds to wait before timing out the connection
+          automaticOpen: true, 
+          reconnectInterval: 1000,  
+          maxReconnectAttempts: 10,  
+          connectionTimeout: 4000,  
       };
 
       this.ws = new ReconnectingWebSocket(this.url, [], options);

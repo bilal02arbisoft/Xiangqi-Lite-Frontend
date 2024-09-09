@@ -4,7 +4,7 @@ import 'css/overlay.css';
 
 import PlayerCard from 'pages/Game/components/PlayerCard'; 
 
-function OverlayComponent({ gameId, isVisible, onClose, countdown, showCountdown, type, gameResult, redPlayer, blackPlayer }) {
+const OverlayComponent = ({ gameId, isVisible, onClose, countdown, showCountdown, type, gameResult, redPlayer, blackPlayer }) => {
     const gameLink = `http://localhost:3000/game/${gameId}`;
     const [copySuccess, setCopySuccess] = useState('');
 

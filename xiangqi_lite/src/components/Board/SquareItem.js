@@ -30,8 +30,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default function SquareItem({ square })
- {
+const SquareItem = ({ square }) => {
   const { handleMovePiece } = useContext(BoardContext);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "PIECE",
@@ -70,3 +69,4 @@ export default function SquareItem({ square })
     </ErrorBoundary>
   );
 }
+export default SquareItem;

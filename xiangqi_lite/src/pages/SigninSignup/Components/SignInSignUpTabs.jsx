@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SignUpForm from 'pages/SigninSignup/Components/SignupForm';
 import SignInForm from 'pages/SigninSignup/Components/SigninForm';
 
-function SignInSignUpTabs() {
+const SignInSignUpTabs = () => {
   const navigate = useNavigate();
   const location = useLocation();
 

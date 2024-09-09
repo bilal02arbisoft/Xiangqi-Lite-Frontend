@@ -2,7 +2,7 @@ import React from "react";
 
 import SquareItem from "components/Board/SquareItem";
 
-export default function Square({ squares }) {
+const Square = ({ squares }) => {
   return (
     <>
       {squares.map((square) => (
@@ -11,3 +11,4 @@ export default function Square({ squares }) {
     </>
   );
 }
+export default Square
