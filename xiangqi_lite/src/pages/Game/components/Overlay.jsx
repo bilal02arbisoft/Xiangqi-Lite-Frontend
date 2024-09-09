@@ -16,10 +16,10 @@ function OverlayComponent({ gameId, isVisible, onClose, countdown, showCountdown
     return isVisible ? (
         <div className="overlay-component">
             <div className={`modal ${type === 'end' ? 'modal-large' : ''}`}>
-                {/* Close Button */}
+                
                 <button className="close-button" onClick={onClose}>×</button>
 
-                {/* Content based on the type */}
+               
                 {type === 'start' && showCountdown ? (
                     <div>
                         <h2>Game starting in: {countdown}</h2>
@@ -32,15 +32,16 @@ function OverlayComponent({ gameId, isVisible, onClose, countdown, showCountdown
                     </div>
                 ) : type === 'end' ? (
                     <div>
-                        <h2>Game Over</h2>
+                        <h2 style={{color:'red', marginLeft:'30px', fontSize:'20px'}}>Game Over</h2>
                         <div className="player-results">
                             <div className="player-card-container">
                                 <PlayerCard player={redPlayer.username === gameResult.winner ? redPlayer : blackPlayer} />
-                                <h4>Winner</h4>
+                                <h4 style={{color:'green', marginRight:'50px'}}> Winner</h4>
                             </div>
+                            <h3 style={{ color: 'black'}}> VS</h3>
                             <div className="player-card-container">
                                 <PlayerCard player={redPlayer.username === gameResult.loser ? redPlayer : blackPlayer} />
-                                <h4>Loser</h4>
+                                <h4 style={{color:'red', marginRight:'70px'}}>Loser</h4>
                             </div>
                         </div>
                     </div>
