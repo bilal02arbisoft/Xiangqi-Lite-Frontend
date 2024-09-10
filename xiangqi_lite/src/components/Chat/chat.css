@@ -55,12 +55,12 @@
   .username {
     font-size: 1em;
     font-weight: bold;
-    color: #333; /* Darker color for username */
+    color: #333; 
   }
   
   .message-text {
     font-size: 1.5em;
-    color: #444; /* Slightly lighter color for message text */
+    color: #444; 
     margin: 0;
   }
   
