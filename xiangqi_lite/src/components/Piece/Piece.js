@@ -4,7 +4,9 @@ import { useDrag } from 'react-dnd';
 import { BoardContext }  from "pages/Game";
 
 
-const Piece = ({ pieceInfo, square }) => {
+const Piece = (props) => {
+  
+  const { pieceInfo, square } = props;
   const {latestIsFlipped} = useContext(BoardContext);
 
 

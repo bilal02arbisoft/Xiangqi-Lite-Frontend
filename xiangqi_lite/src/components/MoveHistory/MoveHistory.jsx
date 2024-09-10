@@ -2,7 +2,8 @@ import React, { useState, useContext, useEffect } from 'react';
 
 import { BoardContext } from 'pages/Game';
 
-const MoveHistory = ({ moveHistory }) => {
+const MoveHistory = (props) => {
+  const { moveHistory } = props;
   const { handleParseFENInput, fenHistory, isPlayerAllowedToMove } = useContext(BoardContext);
   const [currentIndex, setCurrentIndex] = useState(fenHistory.length - 1); 
   const [showTotalMoves, setShowTotalMoves] = useState(true); 

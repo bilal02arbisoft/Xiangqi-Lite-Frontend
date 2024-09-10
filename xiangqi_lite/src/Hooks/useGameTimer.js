@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 
-export const useGameTimer = (initialRedTime, initialBlackTime, onTimerExpire, isPlayerAllowedToMove) => {
+export const useGameTimer = (props) => {
+    const {
+        initialRedTime,
+        initialBlackTime,
+        onTimerExpire,
+        isPlayerAllowedToMove
+    } = props;
     const [redTimeRemaining, setRedTimeRemaining] = useState(initialRedTime);
     const [blackTimeRemaining, setBlackTimeRemaining] = useState(initialBlackTime);
     const [isRedTimerRunning, setIsRedTimerRunning] = useState(false);

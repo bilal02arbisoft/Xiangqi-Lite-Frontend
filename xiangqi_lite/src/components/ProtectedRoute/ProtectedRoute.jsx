@@ -4,7 +4,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from 'auth/useAuth';
 
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = (props) => {
+  const { children } = props;
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 

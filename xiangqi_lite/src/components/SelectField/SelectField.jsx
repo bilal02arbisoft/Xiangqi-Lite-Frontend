@@ -1,6 +1,7 @@
 import React from 'react';
 
-const SelectField = ({ label, name, value, onChange, options, error }) => {
+const SelectField = (props) => {
+  const { label, name, value, onChange, options, error } = props;
   return (
     <div className="mb-4">
       <label className="block text-gray-700 mb-2">{label}</label>

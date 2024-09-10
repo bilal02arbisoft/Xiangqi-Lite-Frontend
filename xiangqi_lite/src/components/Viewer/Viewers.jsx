@@ -2,7 +2,8 @@ import React from 'react';
 
 import PlayerCard from 'components/PlayerCard'; 
 
-const Viewers = ({ viewers }) => {
+const Viewers = (props) => {
+  const { viewers } = props;
   return (
     <div className="viewers-tab">
       <div className="viewer-list">

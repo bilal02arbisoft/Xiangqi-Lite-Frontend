@@ -1,6 +1,7 @@
 import React from 'react';
 
-const PlayerCard = ({ player}) => {
+const PlayerCard = (props) => {
+  const { player} = props;
   if (!player) return null; 
 
   return (

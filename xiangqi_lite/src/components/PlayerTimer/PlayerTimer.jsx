@@ -2,7 +2,8 @@ import React from 'react';
 
 import PlayerCard from 'components/PlayerCard';
 
-const PlayerTimer = ({ isFlipped, blackTimeRemaining, redTimeRemaining, redPlayer, blackPlayer }) => {
+const PlayerTimer = (props) => {
+    const { isFlipped, blackTimeRemaining, redTimeRemaining, redPlayer, blackPlayer } = props;
     
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);

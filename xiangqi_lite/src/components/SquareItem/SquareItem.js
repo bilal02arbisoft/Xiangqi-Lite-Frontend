@@ -30,7 +30,8 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const SquareItem = ({ square }) => {
+const SquareItem = (props) => {
+  const { square } = props;
   const { handleMovePiece } = useContext(BoardContext);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "PIECE",

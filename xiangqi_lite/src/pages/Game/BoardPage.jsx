@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import useState from 'react-usestateref';
-
 import axios from 'axios';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -11,6 +10,8 @@ import './boardpage.css';
 import { generateFEN, parseFENInput } from 'utils/FENUtils';
 import WebSocketManager from 'utils/WebSocket';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
+import { handleWebSocketOpen} from 'utils/handleWebSocketOpen';
+import  {handleWebSocketMessage } from 'utils/handleWebSocketMessage';
 
 import Board from 'components/Board';
 import GameTabs from 'components/GameTabs';
@@ -19,11 +20,8 @@ import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
 
 import { useGameTimer } from 'Hooks/useGameTimer';
-import { handleWebSocketOpen} from 'utils/handleWebSocketOpen';
-import  {handleWebSocketMessage } from 'utils/handleWebSocketMessage';
 
 export const BoardContext = React.createContext();
-
 
 const BoardPage = () => {
     const { game_id: gameIdFromParams } = useParams(); 
@@ -145,7 +143,6 @@ const BoardPage = () => {
     function updateMoveHistory(player, move, fen) {
         setMoveHistory((prevHistory) => {
           const newHistory = [...prevHistory];
-          console.log("move which I'm updating", move);
           newHistory.push(move);
       
           return newHistory;

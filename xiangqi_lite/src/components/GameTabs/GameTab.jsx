@@ -6,8 +6,8 @@ import Viewers from 'components/Viewer';
 
 import { BoardContext } from 'pages/Game';
 
-
-const TabPanel = ({ children }) => {
+const TabPanel = (props) => {
+   const  { children } = props;
     return <div className="tab-content">{children}</div>;
 }
 
