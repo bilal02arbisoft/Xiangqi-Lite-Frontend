@@ -1,5 +1,4 @@
 import React, {useContext} from "react";
-
 import { useDrag } from 'react-dnd';
 
 import { BoardContext }  from "pages/Game";

@@ -4,7 +4,6 @@ import './chat.css';
 
 import { BoardContext } from 'pages/Game';
 
-
 const Chat = () => {
   const { wsManagerRef, updateChatMessages, chatMessages, users, useridRef } = useContext(BoardContext);
   const [message, setMessage] = useState('');

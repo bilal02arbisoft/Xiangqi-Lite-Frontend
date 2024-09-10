@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const ConfirmationModal = ({ isVisible, onConfirm, onCancel }) => {
   if (!isVisible) return null; 
 

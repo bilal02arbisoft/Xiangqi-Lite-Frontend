@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 
-import { BoardContext } from 'pages/Game';
-
 import MoveHistory from 'components/MoveHistory';
 import Chat from 'components/Chat';
 import Viewers from 'components/Viewer';
+
+import { BoardContext } from 'pages/Game';
 
 
 const TabPanel = ({ children }) => {
