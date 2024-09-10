@@ -32,4 +32,3 @@ const PlayerTimer = (props) => {
 }
 
 export default PlayerTimer;
-

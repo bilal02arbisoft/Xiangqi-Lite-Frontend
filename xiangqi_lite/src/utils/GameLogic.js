@@ -286,4 +286,3 @@ export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver) =
     }
   }
    
-  

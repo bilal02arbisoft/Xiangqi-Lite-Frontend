@@ -1,5 +1,4 @@
 @import-normalize;
-@import "components/Button/buttons.css";
 @import "components/Square/squares.css";
 @import "components/Board/board.css";
 @import "components/Piece/piece.css";
@@ -387,6 +386,3 @@ h3 {
 .cancel-button:hover {
   color: #ff0000; 
 }
-
-
-

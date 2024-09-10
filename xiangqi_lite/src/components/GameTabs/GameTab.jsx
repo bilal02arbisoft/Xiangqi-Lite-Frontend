@@ -44,6 +44,3 @@ const TabPanel = (props) => {
     );
 }
 export default GameTabs;
-
-
-

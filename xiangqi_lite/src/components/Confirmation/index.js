@@ -1,3 +1,3 @@
 import ConfirmationModal from "./Confirmation";
 
-export default ConfirmationModal
+export default ConfirmationModal;

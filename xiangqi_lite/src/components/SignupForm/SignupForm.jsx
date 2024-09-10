@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import InputField from 'components/InputField';
 import SelectField from 'components/SelectField';
 import Button from 'components/Button';
+import { countryOptions } from 'utils/countryoptions';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -126,12 +127,7 @@ const SignUpForm = () => {
       <SelectField
         label="Country/Region"
         name="country"
-        options={[
-          { value: 'us', label: 'United States' },
-          { value: 'cn', label: 'China' },
-          { value: 'uk', label: 'United Kingdom' },
-          { value: 'pk', label: 'Pakistan' },
-        ]}
+        options={countryOptions}
         value={formData.country}
         onChange={handleChange}
         error={errors.country}
