@@ -40,10 +40,14 @@ const FriendsPage = () => {
 
   const handleAccept = (request) => {
     const token = localStorage.getItem('access_token');
-    const { username } = request;
+    const { from_user: { username } } = request;
 
-    axios.post('http://127.0.0.1:8000/friendship/accept-request/', 
-      { from_user: username }, 
+    axios.post('http://127.0.0.1:8000/friendship/respond-request/', 
+      
+      { from_user: username ,
+        action: 'accepted'
+      }, 
+      
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -52,7 +56,7 @@ const FriendsPage = () => {
       }
     )
     .then(response => {
-      setFriendRequests(prevRequests => prevRequests.filter(req => req.username !== username));
+      setFriendRequests(prevRequests => prevRequests.filter(req => req.from_user.username !== username));
       const newFriend = {
         username: request.username,
         email: request.email,
@@ -73,8 +77,9 @@ const FriendsPage = () => {
 
   const handleReject = (username) => {
     const token = localStorage.getItem('access_token');
-    axios.post('http://127.0.0.1:8000/friendship/reject-request/', {
+    axios.post('http://127.0.0.1:8000/friendship/respond-request/', {
       from_user: username,
+      action:'rejected'
     }, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -182,8 +187,8 @@ const FriendsPage = () => {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 rounded-full bg-gray-300 flex justify-center items-center overflow-hidden">
-                        {request.profile.profile_picture ? (
-                          <img src={`http://127.0.0.1:8000${request.profile.profile_picture}`} alt={request.username} className="w-full h-full object-cover" />
+                        {request.from_user.profile.profile_picture ? (
+                          <img src={`http://127.0.0.1:8000${request.from_user.profile.profile_picture}`} alt={request.username} className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-white text-sm">No Image</span>
                         )}
