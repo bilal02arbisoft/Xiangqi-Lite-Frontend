@@ -11,8 +11,8 @@ import ProfileEditPage from 'pages/Profile';
 import VerifyOtpPage from 'pages/VerifOtp';
 import FriendsPage from 'pages/Friend';
 import BoardPage from 'pages/Game';
-import Home from 'pages/Home/Home';
-import GlobalChat from 'pages/GlobalChat/globalchat';
+import Home from 'pages/Home';
+import GlobalChat from 'pages/GlobalChat';
 
 const App = () => {
   return (

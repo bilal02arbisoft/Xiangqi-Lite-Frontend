@@ -10,7 +10,7 @@ const SignInForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const location = useLocation();
-  const { from } = location.state || { from: { pathname: "/profile" } };
+  const { from } = location.state || { from: { pathname: "/" } };
   const [formData, setFormData] = useState({
     username: '',
     password: '',

@@ -1,9 +1,14 @@
+import axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import useState from 'react-usestateref';
+
+import './globalchat.css';  
+
 import singletonWebSocketManager from 'utils/WebSocket';
 import PlayerCard from 'components/PlayerCard'; 
-import './globalchat.css';  
-import axios from 'axios';
+
+
+
 
 const GlobalChat = () => {
     const [, setMessages, LatestMessages] = useState([]);  
