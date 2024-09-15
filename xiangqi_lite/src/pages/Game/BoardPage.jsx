@@ -9,6 +9,7 @@ import './boardpage.css';
 
 import { generateFEN, parseFENInput } from 'utils/FENUtils';
 import WebSocketManager from 'utils/WebSocket';
+import singletonWebSocketManager from 'utils/WebSocket';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 import { handleWebSocketOpen} from 'utils/handleWebSocketOpen';
 import  {handleWebSocketMessage } from 'utils/handleWebSocketMessage';
@@ -222,7 +223,6 @@ const BoardPage = () => {
                     const gameData = response.data;
                      gameIdRef.current = gameData.game_id;  
                     navigate(`/game/${gameData.game_id}`);  
-                   
                 }
             } catch (error) {
                 setError(true);
@@ -230,24 +230,36 @@ const BoardPage = () => {
         }
         useEffect(() => {
             initializeGame().then(() => {
+
                 const token = localStorage.getItem('access_token');
-                wsManagerRef.current = WebSocketManager.getInstance(
-                    'ws://localhost:8000/ws/game/',
-                    token,
-                    ws => handleWebSocketOpen(ws, gameIdRef),
-                    data => handleWebSocketMessage(data, webSocketProps),
-                    () => console.log('WebSocket closed for BoardPage'),
-                    (err) => console.error('WebSocket error for BoardPage:', err)
+                wsManagerRef.current = singletonWebSocketManager.getInstance(
+                    'ws://localhost:8000/ws/game/', 
+                    token
                 );
-                wsManagerRef.current.connect();  
+                
+                if (wsManagerRef.current.isConnected) {
+                    handleWebSocketOpen(wsManagerRef.current.ws, gameIdRef);
+                } else {
+                    wsManagerRef.current.addOpenListener((ws) => {
+                        handleWebSocketOpen(ws, gameIdRef);
+                    });
+                    
+                    wsManagerRef.current.connect();
+                }
+        
+                wsManagerRef.current.addMessageListener(data => handleWebSocketMessage(data, webSocketProps));
+        
             });
-    
+        
             return () => {
                 if (wsManagerRef.current) {
-                    wsManagerRef.current.closeConnection();
+                    wsManagerRef.current.removeOpenListener(handleWebSocketOpen);
+                    wsManagerRef.current.removeMessageListener(handleWebSocketMessage);
                 }
             };
         }, []); 
+        
+        
 
         useEffect(() => {
             let timerId;

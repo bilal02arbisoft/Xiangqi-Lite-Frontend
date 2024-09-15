@@ -11,6 +11,8 @@ import ProfileEditPage from 'pages/Profile';
 import VerifyOtpPage from 'pages/VerifOtp';
 import FriendsPage from 'pages/Friend';
 import BoardPage from 'pages/Game';
+import Home from 'pages/Home/Home';
+import GlobalChat from 'pages/GlobalChat/globalchat';
 
 const App = () => {
   return (
@@ -22,7 +24,8 @@ const App = () => {
               <Route path="signup" element={<SignUpPage />} />
               </Route>
          
-          <Route path="/" element={<SignUpPage />}></Route>
+          <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />
+          <Route path="globalchat" element={<ProtectedRoute><GlobalChat/></ProtectedRoute>} />
           <Route path="/friend" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
           <Route path="/verify-otp" element={<ProtectedRoute><VerifyOtpPage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />

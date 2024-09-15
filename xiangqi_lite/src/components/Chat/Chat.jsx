@@ -57,10 +57,10 @@ const Chat = () => {
                 alt="User Profile"
                 className="profile-picture"
               />
-              <div className="message-content">
+              <div className="message-contents">
                 <div className="message-info">
                   <strong className="username">{user ? user.username : 'Unknown User'}</strong>
-                  <p className="message-text">{msg.message}</p>
+                  <p className="message-texts">{msg.message}</p>
                 </div>
                
               </div>

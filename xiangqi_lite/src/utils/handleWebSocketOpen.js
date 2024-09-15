@@ -9,7 +9,7 @@ export const handleWebSocketOpen = (ws, gameIdRef) => {
             type: 'game.get',
             id: gameIdRef.current,
         }));
-
+      console.log("Sent event")
     } else {
         
         console.log('WebSocket state:', ws ? ws.readyState : 'ws is null');

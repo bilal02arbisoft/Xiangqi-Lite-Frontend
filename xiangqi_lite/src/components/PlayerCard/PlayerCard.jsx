@@ -8,7 +8,8 @@ const PlayerCard = (props) => {
     <div className={`player-card`}>
       <div className="player-info-row"> 
       <h3 >
-          {player.username} ({player.rating})
+          {player.username}
+          {player.rating && ` (${player.rating})`}
         </h3>
         <img 
           src={player.profile_picture ? `http://127.0.0.1:8000${player.profile_picture}` : 'default_profile.png'} 

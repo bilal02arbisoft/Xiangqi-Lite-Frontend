@@ -39,7 +39,7 @@
     margin-right: 10px;
   }
   
-  .message-content {
+  .message-contents {
     display: flex;
     flex-direction: column; 
     gap: 5px;
@@ -58,7 +58,7 @@
     color: #333; 
   }
   
-  .message-text {
+  .message-texts {
     font-size: 1.5em;
     color: #444; 
     margin: 0;
