@@ -14,8 +14,7 @@ const Home =  () =>  {
         wsManagerRef.current = singletonWebSocketManager.getInstance(
             'ws://localhost:8000/ws/game/', 
             token
-        );
-        
+        ); 
         wsManagerRef.current.connect();
         
     }, []); 

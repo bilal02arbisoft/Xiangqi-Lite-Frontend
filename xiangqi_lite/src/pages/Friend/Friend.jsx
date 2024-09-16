@@ -243,7 +243,7 @@ const FriendsPage = () => {
                     <div className="flex justify-between items-center">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 rounded-full bg-gray-300 flex justify-center items-center overflow-hidden">
-                          {user.profile.profile_picture ? (
+                          {user.profile && user.profile.profile_picture ? (
                             <img src={`http://127.0.0.1:8000${user.profile.profile_picture}`} alt={user.username} className="w-full h-full object-cover" />
                           ) : (
                             <span className="text-white text-sm">No Image</span>
