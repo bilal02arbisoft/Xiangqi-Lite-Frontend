@@ -1,4 +1,5 @@
 import React from 'react';
+import config from 'config';
 
 const PlayerCard = (props) => {
   const { player} = props;
@@ -12,7 +13,7 @@ const PlayerCard = (props) => {
           {player.rating && ` (${player.rating})`}
         </h3>
         <img 
-          src={player.profile_picture ? `http://127.0.0.1:8000${player.profile_picture}` : 'default_profile.png'} 
+          src={player.profile_picture ? `${config.BACKEND_HTTP_URL}${player.profile_picture}` : 'default_profile.png'} 
           alt={`${player.username}'s profile`} 
           className="profile-picture"
         />

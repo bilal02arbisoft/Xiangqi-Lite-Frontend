@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import config from 'config';
+
 const FriendsPage = () => {
   const [activeTab, setActiveTab] = useState('friends');
   const [friends, setFriends] = useState([]);
@@ -12,7 +14,7 @@ const FriendsPage = () => {
     const token = localStorage.getItem('access_token');
 
    
-    axios.get('http://127.0.0.1:8000/friendship/friends/', {
+    axios.get(`${config.BACKEND_HTTP_URL}/friendship/friends/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -24,7 +26,7 @@ const FriendsPage = () => {
     .catch(error => {
       console.error('Error fetching friends:', error);
     });
-    axios.get('http://127.0.0.1:8000/friendship/requests/', {
+    axios.get(`${config.BACKEND_HTTP_URL}/friendship/requests/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,7 +44,7 @@ const FriendsPage = () => {
     const token = localStorage.getItem('access_token');
     const { from_user: { username } } = request;
 
-    axios.post('http://127.0.0.1:8000/friendship/respond-request/', 
+    axios.post(`${config.BACKEND_HTTP_URL}/friendship/respond-request/`, 
       
       { from_user: username ,
         action: 'accepted'
@@ -77,7 +79,7 @@ const FriendsPage = () => {
 
   const handleReject = (username) => {
     const token = localStorage.getItem('access_token');
-    axios.post('http://127.0.0.1:8000/friendship/respond-request/', {
+    axios.post(`${config.BACKEND_HTTP_URL}/friendship/respond-request/`, {
       from_user: username,
       action:'rejected'
     }, {
@@ -96,7 +98,7 @@ const FriendsPage = () => {
 
   const handleSearch = () => {
     const token = localStorage.getItem('access_token');
-    axios.get(`http://127.0.0.1:8000/friendship/users/search/?query=${searchQuery}`, {
+    axios.get(`${config.BACKEND_HTTP_URL}/friendship/users/search/?query=${searchQuery}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -112,7 +114,7 @@ const FriendsPage = () => {
 
   const handleSendRequest = (username) => {
     const token = localStorage.getItem('access_token');
-    axios.post('http://127.0.0.1:8000/friendship/send-request/', {
+    axios.post(`${config.BACKEND_HTTP_URL}/friendship/send-request/`, {
       username: username,
     }, {
       headers: {
@@ -163,7 +165,7 @@ const FriendsPage = () => {
                   <div key={index} className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-full bg-gray-300 flex justify-center items-center overflow-hidden">
                       {friend.profile.profile_picture ? (
-                        <img src={`http://127.0.0.1:8000${friend.profile.profile_picture}`} alt={friend.username} className="w-full h-full object-cover" />
+                        <img src={`${config.BACKEND_HTTP_URL}${friend.profile.profile_picture}`} alt={friend.username} className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-white text-sm">No Image</span>
                       )}

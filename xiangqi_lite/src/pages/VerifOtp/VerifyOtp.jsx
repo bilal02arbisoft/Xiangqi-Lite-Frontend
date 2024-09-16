@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import config from 'config';
+
 const VerifyOtpPage = () => {
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
@@ -10,7 +12,7 @@ const VerifyOtpPage = () => {
   const handleOtpSubmit = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('access_token');
-    axios.post('http://127.0.0.1:8000/api/verifyotp/', { otp }, {
+    axios.post(`${config.BACKEND_HTTP_URL}/api/verifyotp/`, { otp }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

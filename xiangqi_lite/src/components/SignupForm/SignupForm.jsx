@@ -5,6 +5,8 @@ import SelectField from 'components/SelectField';
 import Button from 'components/Button';
 import { countryOptions } from 'utils/countryoptions';
 
+import config from 'config';
+
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -55,7 +57,7 @@ const SignUpForm = () => {
 
       console.log('Data to be sent:', dataToSend);
 
-      const response = await fetch('http://127.0.0.1:8000/api/auth/signup/', {
+      const response = await fetch( `${config.BACKEND_HTTP_URL}/api/auth/signup/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

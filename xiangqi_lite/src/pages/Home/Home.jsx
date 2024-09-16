@@ -5,6 +5,8 @@ import './home.css';
 
 import singletonWebSocketManager from 'utils/WebSocket';
 
+import config from 'config';
+
 const Home =  () =>  {
     const wsManagerRef = useRef();
 
@@ -12,7 +14,7 @@ const Home =  () =>  {
         const token = localStorage.getItem('access_token');
         
         wsManagerRef.current = singletonWebSocketManager.getInstance(
-            'ws://localhost:8000/ws/game/', 
+            `${config.BACKEND_WS_URL}/ws/game/`, 
             token
         ); 
         wsManagerRef.current.connect();

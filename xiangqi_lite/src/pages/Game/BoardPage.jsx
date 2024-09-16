@@ -20,6 +20,8 @@ import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
 import { useGameTimer } from 'Hooks/useGameTimer';
 
+import config from 'config';
+
 export const BoardContext = React.createContext();
 
 const BoardPage = () => {
@@ -185,7 +187,7 @@ const BoardPage = () => {
         async function fetchUserDetails() {
             try {
                 const token = localStorage.getItem('access_token');
-                const response = await axios.get('http://127.0.0.1:8000/api/profile/', {
+                const response = await axios.get(`${config.BACKEND_HTTP_URL}/api/profile/`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -210,7 +212,7 @@ const BoardPage = () => {
                 const token = localStorage.getItem('access_token');
                 if (!gameIdFromParams) {
                     
-                    const response = await axios.post('http://127.0.0.1:8000/game/create/', null, {
+                    const response = await axios.post(`${config.BACKEND_HTTP_URL}/game/create/`, null, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -228,7 +230,7 @@ const BoardPage = () => {
 
                 const token = localStorage.getItem('access_token');
                 wsManagerRef.current = singletonWebSocketManager.getInstance(
-                    'ws://localhost:8000/ws/game/', 
+                    `${config.BACKEND_WS_URL}/ws/game/`, 
                     token
                 );
                 

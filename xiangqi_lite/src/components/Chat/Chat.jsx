@@ -4,6 +4,8 @@ import './chat.css';
 
 import { BoardContext } from 'pages/Game';
 
+import config from 'config';
+
 const Chat = () => {
   const { wsManagerRef, updateChatMessages, chatMessages, users, useridRef } = useContext(BoardContext);
   const [message, setMessage] = useState('');
@@ -53,7 +55,7 @@ const Chat = () => {
           return (
             <div key={index} className={`message ${msg.isSent === 'sent' ? 'sent' : 'received'}`}>
               <img
-                src={user ? `http://127.0.0.1:8000${user.profile_picture}` : 'default_profile.png'}
+                src={user ? `${config.BACKEND_HTTP_URL}${user.profile_picture}` : 'default_profile.png'}
                 alt="User Profile"
                 className="profile-picture"
               />

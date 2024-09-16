@@ -3,6 +3,8 @@ import axios from 'axios';
 
 import { useNavigate } from 'react-router-dom';
 
+import config from 'config';
+
 const ProfileEditPage = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -21,7 +23,7 @@ const ProfileEditPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      axios.get('http://127.0.0.1:8000/api/profile/', {
+      axios.get(`${config.BACKEND_HTTP_URL}/api/profile/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,7 +39,7 @@ const ProfileEditPage = () => {
           setProfilePicture(profileData.profile.profile_picture);
           setCountry(profileData.profile.country);
           setSkillLevel(profileData.profile.skill_level);
-          setProfilePictureUrl(profileData.profile.profile_picture ? `http://127.0.0.1:8000${profileData.profile.profile_picture}` : '');
+          setProfilePictureUrl(profileData.profile.profile_picture ? `${config.BACKEND_HTTP_URL}${profileData.profile.profile_picture}` : '');
           setOriginalData({
             username: profileData.username,
             bio: profileData.profile.bio,
@@ -51,7 +53,7 @@ const ProfileEditPage = () => {
           console.error('Error fetching profile:', error);
         });
 
-      axios.get('http://127.0.0.1:8000/friendship/friends/', {
+      axios.get(`${config.BACKEND_HTTP_URL}/friendship/friends/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -78,7 +80,7 @@ const ProfileEditPage = () => {
 
   const handleRequestOtp = () => {
     const token = localStorage.getItem('access_token');
-    axios.post('http://127.0.0.1:8000/api/requestotp/', {}, {
+    axios.post(`${config.BACKEND_HTTP_URL}/api/requestotp/`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -108,7 +110,7 @@ const ProfileEditPage = () => {
     }
 
     const token = localStorage.getItem('access_token');
-    axios.put('http://127.0.0.1:8000/api/profile/', formData, {
+    axios.put(`${config.BACKEND_HTTP_URL}/api/profile/`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
@@ -126,7 +128,7 @@ const ProfileEditPage = () => {
           skill_level: updatedProfile.profile.skill_level || '',
           profile_picture: updatedProfile.profile.profile_picture || '',
         });
-        setProfilePictureUrl(updatedProfile.profile.profile_picture ? `http://127.0.0.1:8000${updatedProfile.profile.profile_picture}` : '');
+        setProfilePictureUrl(updatedProfile.profile.profile_picture ? `${config.BACKEND_HTTP_URL}${updatedProfile.profile.profile_picture}` : '');
       })
       .catch(error => {
         console.error('Error updating profile:', error);
@@ -137,7 +139,7 @@ const ProfileEditPage = () => {
   const handleDeleteAccount = () => {
     if (window.confirm('Are you sure you want to delete your account?')) {
       const token = localStorage.getItem('access_token');
-      axios.delete('http://127.0.0.1:8000/api/delete/', {
+      axios.delete(`${config.BACKEND_HTTP_URL}/api/delete/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -245,7 +247,7 @@ const ProfileEditPage = () => {
         <div key={index} className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-full bg-gray-300 flex justify-center items-center overflow-hidden">
             {friend.profile.profile_picture ? (
-              <img src={`http://127.0.0.1:8000${friend.profile.profile_picture}`} alt={friend.username} className="w-full h-full object-cover" />
+              <img src={`${config.BACKEND_HTTP_URL}${friend.profile.profile_picture}`} alt={friend.username} className="w-full h-full object-cover" />
             ) : (
               <span className="text-white text-sm">No Image</span>
             )}

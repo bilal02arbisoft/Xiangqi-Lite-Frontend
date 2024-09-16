@@ -6,6 +6,8 @@ import './globalchat.css';
 
 import singletonWebSocketManager from 'utils/WebSocket';
 
+import config from 'config';
+
 const GlobalChat = () => {
     const getFormattedDate = () => {
         const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -66,7 +68,7 @@ const GlobalChat = () => {
     const fetchUserProfile = async (user_id) => {
         try {
             const token = localStorage.getItem('access_token');
-            const response = await axios.get(`http://127.0.0.1:8000/api/details/${user_id}/`,
+            const response = await axios.get(`${config.BACKEND_HTTP_URL}/api/details/${user_id}/`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -100,7 +102,7 @@ const GlobalChat = () => {
             return (
                 <div key={index} className={`message`}>
                     <img
-                        src={profile ? `http://127.0.0.1:8000${profile.profile_picture}` : 'default_profile.png'}
+                        src={profile ? `${config.BACKEND_HTTP_URL}${profile.profile_picture}` : 'default_profile.png'}
                         alt="User Profile"
                         className="profile-picture"
                     />

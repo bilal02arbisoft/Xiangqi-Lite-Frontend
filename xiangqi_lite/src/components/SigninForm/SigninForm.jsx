@@ -6,6 +6,8 @@ import { useAuth } from 'auth/useAuth';
 import InputField from 'components/InputField';
 import Button from 'components/Button/Button';
 
+import config from "config";
+
 const SignInForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -39,7 +41,7 @@ const SignInForm = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/token/', {
+      const response = await fetch(`${config.BACKEND_HTTP_URL}/api/token/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
