@@ -37,7 +37,7 @@ class WebSocketManager {
     this.ws.onopen = () => {
       console.log('WebSocket connection opened');
       this.isConnected = true;
-      // Call each open listener, passing the WebSocket object to the callback
+     
       this.openListeners.forEach((callback) => callback(this.ws));
     };
 

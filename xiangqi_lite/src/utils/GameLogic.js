@@ -153,7 +153,8 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     setGameOver,
     setCounter,
     setSelectedSquareInfo,
-    moveplayed
+    moveplayed,
+    handleTimerExpire
 
   ) => {
     if (counter % 2 === 0) {
@@ -171,14 +172,12 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         setAvailableSqr(findAvailableSqr(sqr, piece, color, row, column));
         addAvailableStyle();
         return false;
-      } else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
+      } 
+      else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
        
         const startUCI = convertToUCI(selectedSquareInfo.row, selectedSquareInfo.column);
         const endUCI = convertToUCI(row, column);
         const uciMove = startUCI + endUCI;
-  
-      
-        console.log(`Move played: ${uciMove}`);
         moveplayed.current = uciMove
   
         if (color !== null) {
@@ -193,7 +192,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
           setHalfMoveClock((prev) => prev + 1);
         }
   
-       
         setSqr((prevState) => {
           const newSqr = prevState.map((s) => ({ ...s }));
   
@@ -242,7 +240,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         }
        
         setCounter(2);
-        checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver)
+        checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver, handleTimerExpire)
         return true;
       } else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
         const newSqr = [...sqr];
@@ -262,7 +260,7 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
 
 
  
-export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver) => {
+export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver, handleTimerExpire) => {
     const pieceList = sqr.filter(
       (p) => p.color === currentTurn && p.piece != null
     );
@@ -281,6 +279,7 @@ export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver) =
     }
     if (possibleMoveList.length === 0) {
       setGameOver(true);
+      handleTimerExpire()
     } else {
       setGameOver(false);
     }

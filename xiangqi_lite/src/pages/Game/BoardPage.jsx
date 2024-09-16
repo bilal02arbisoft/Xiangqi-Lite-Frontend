@@ -8,7 +8,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './boardpage.css';
 
 import { generateFEN, parseFENInput } from 'utils/FENUtils';
-import WebSocketManager from 'utils/WebSocket';
 import singletonWebSocketManager from 'utils/WebSocket';
 import { initializeSquares, findAvailableSqr, MovePiece } from 'utils/GameLogic';
 import { handleWebSocketOpen} from 'utils/handleWebSocketOpen';
@@ -19,7 +18,6 @@ import GameTabs from 'components/GameTabs';
 import OverlayComponent from 'components/Overlay';
 import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
-
 import { useGameTimer } from 'Hooks/useGameTimer';
 
 export const BoardContext = React.createContext();
@@ -27,7 +25,6 @@ export const BoardContext = React.createContext();
 const BoardPage = () => {
     const { game_id: gameIdFromParams } = useParams(); 
     const navigate = useNavigate();
-
     const usernameRef = useRef(null); 
     const moveplayed = useRef(null);
     const gameIdRef = useRef(gameIdFromParams); 
@@ -131,7 +128,6 @@ const BoardPage = () => {
         }
     };
     
-    
     const {
         redTimeRemaining,
         setRedTimeRemaining,
@@ -185,7 +181,6 @@ const BoardPage = () => {
         handleGameEnd
     
     };
-
 
         async function fetchUserDetails() {
             try {
@@ -246,7 +241,6 @@ const BoardPage = () => {
                     
                     wsManagerRef.current.connect();
                 }
-        
                 wsManagerRef.current.addMessageListener(data => handleWebSocketMessage(data, webSocketProps));
         
             });
@@ -288,7 +282,6 @@ const BoardPage = () => {
            
     useEffect(() => {
         let warningTimerId;
-
         if (isWarningActive && warningCountdown > 0) {
             warningTimerId = setTimeout(() => {
                 setWarningCountdown(prevCountdown => prevCountdown - 1);
@@ -304,7 +297,6 @@ const BoardPage = () => {
 
     useEffect(() => {
         let inactivityTimeout;
-
         
         if (isGameReady && isPlayerAllowedToMove() && !moveplayed.current) {
            
@@ -395,7 +387,8 @@ const BoardPage = () => {
             setGameOver,
             setCounter,
             setSelectedSquareInfo,
-            moveplayed
+            moveplayed,
+            handleTimerExpire
         );
        
         
@@ -404,8 +397,6 @@ const BoardPage = () => {
             updateMoveHistory(currentTurn, moveplayed.current,latestFENOutput.current);
            
             const thinkingTime = Math.floor((Date.now() - latestTurnStartTime.current) / 1000); 
-            console.log("Thinking time :",thinkingTime)
-            console.log("Turn start time",latestTurnStartTime.current)
             handleGenerateFEN();
 
             const message = JSON.stringify({

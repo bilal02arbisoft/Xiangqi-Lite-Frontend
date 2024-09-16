@@ -5,37 +5,32 @@ import useState from 'react-usestateref';
 import './globalchat.css';  
 
 import singletonWebSocketManager from 'utils/WebSocket';
-import PlayerCard from 'components/PlayerCard'; 
-
-
-
 
 const GlobalChat = () => {
+    const getFormattedDate = () => {
+        const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
+        return new Date().toLocaleDateString('en-US', options);
+      };
+
     const [, setMessages, LatestMessages] = useState([]);  
     const [, setProfiles, LatestProfiles ] = useState({});  
     const [inputMessage, setInputMessage] = useState('');  
     const wsManagerRef = useRef(null);  
+    const [currentDate,] = useState(getFormattedDate());
 
-    
     const handleWebSocketMessage = (data) => {
         if (data.type === 'chat.message') {
-            console.log("Sving messages", data)
-           
             setMessages((prevMessages) => [...prevMessages, data]);
-        } else if (data.type === 'chat.userprofile') {
-           
+        }
+         else if (data.type === 'chat.userprofile') {
             const { user_id, username, profile_picture } = data.message;
             setProfiles((prevProfiles) => ({
                 ...prevProfiles,
                 [user_id]: { username, profile_picture: profile_picture },
             }));
-         console.log("message recieved",data.message)
-         console.log("Profile here",LatestProfiles.current)
-         console.log("User id",user_id)
         }
     };
 
-    
     const sendMessage = () => {
         if (wsManagerRef.current && wsManagerRef.current.ws.readyState === WebSocket.OPEN && inputMessage.trim()) {
             const chatMessage = {
@@ -47,7 +42,6 @@ const GlobalChat = () => {
         }
     };
 
-    
     const handleWebSocketOpen = (ws) => {
         const chatJoinMessage = {
             type: 'chat.join',
@@ -55,7 +49,6 @@ const GlobalChat = () => {
         ws.send(JSON.stringify(chatJoinMessage)); 
     };
 
-    
     useEffect(() => {
         wsManagerRef.current = singletonWebSocketManager.getInstance();
         wsManagerRef.current.addMessageListener(handleWebSocketMessage);
@@ -94,36 +87,45 @@ const GlobalChat = () => {
         }
     };
 
- 
     const renderMessages = () => {
         return LatestMessages.current.map((message, index) => {
-            console.log("Profiles so far",LatestProfiles.current)
-            const profile = LatestProfiles.current[message.user_id]; 
+            const profile = LatestProfiles.current[message.user_id];
             if (!profile) {
                 fetchUserProfile(message.user_id).then(fetchedProfile => {
                     if (fetchedProfile) {
                         setMessages([...LatestMessages.current]);
-                        
                     }
                 });
             }
-            console.log("Profile details:",LatestProfiles.current)
             return (
-                <div key={index} className="chat-message-container">
-                    {profile && <PlayerCard player={profile} />}
-                    <div className="message-content">
-                        <div className="message-text">{message.message}</div>
+                <div key={index} className={`message`}>
+                    <img
+                        src={profile ? `http://127.0.0.1:8000${profile.profile_picture}` : 'default_profile.png'}
+                        alt="User Profile"
+                        className="profile-picture"
+                    />
+                    <div className="message-contents">
+                        <div className="message-info">
+                            <strong className="username">{profile ? profile.username : 'Unknown User'}</strong>
+                            <p className="message-texts">{message.message}</p>
+                        </div>
+                    </div>
+                    <div className="timestamp">
+                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                 </div>
             );
         });
     };
+    
 
     return (
         <div className="global-chat-container">
             <header className="chat-header">Global Chat</header>
 
             <div className="chat-window">
+            <div className="date-header">{currentDate}</div>
+
                 {renderMessages()}
             </div>
 
