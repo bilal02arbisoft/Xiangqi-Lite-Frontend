@@ -83,7 +83,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         (s) => s.piece === "king" && s.color === color
       );
   
-      
       if (
         
         checkDanger(simulateSqr, color, kingSqr.row, kingSqr.column) === undefined
@@ -120,7 +119,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     return squares;
   };  
 
-  
 
   const convertToUCI = (row, column) => {
     
@@ -155,8 +153,8 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     setSelectedSquareInfo,
     moveplayed,
     handleTimerExpire
-
   ) => {
+
     if (counter % 2 === 0) {
       if (color === currentTurn) {
         handleSelectSquare(row, column);
@@ -172,13 +170,11 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
         setAvailableSqr(findAvailableSqr(sqr, piece, color, row, column));
         addAvailableStyle();
         return false;
-      } 
-      else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
-       
+      } else if (availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
         const startUCI = convertToUCI(selectedSquareInfo.row, selectedSquareInfo.column);
         const endUCI = convertToUCI(row, column);
         const uciMove = startUCI + endUCI;
-        moveplayed.current = uciMove
+        moveplayed.current = uciMove;
   
         if (color !== null) {
           setHalfMoveClock(0);
@@ -202,7 +198,6 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             (s) => s.id === `${row}-${column}`
           );
   
-         
           newSqr.forEach((s, index) => {
             newSqr[index] = {
               ...s,
@@ -212,16 +207,14 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
             };
           });
   
-         
           newSqr[startIndex] = {
             ...newSqr[startIndex],
             piece: null,
             color: null,
             isPreviousMoved: false,
-            isSelected: false
+            isSelected: false,
           };
   
-         
           newSqr[destinationIndex] = {
             ...newSqr[destinationIndex],
             piece: selectedSquareInfo.piece,
@@ -232,15 +225,17 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
           return newSqr;
         });
   
+        const nextTurn = currentTurn === "red" ? "black" : "red";
+        checkGameOver(sqr, nextTurn, findAvailableSqr, setGameOver, handleTimerExpire);
+  
         if (currentTurn === "red") {
           setCurrentTurn("black");
         } else {
           setCurrentTurn("red");
           setFullMoveNumber((prev) => prev + 1);
         }
-       
+
         setCounter(2);
-        checkGameOver(sqr, currentTurn, findAvailableSqr, setGameOver, handleTimerExpire)
         return true;
       } else if (!availableSqr.some((sqr) => sqr.id === `${row}-${column}`)) {
         const newSqr = [...sqr];
@@ -255,16 +250,13 @@ export function findAvailableSqr(sqr,piece, color, row, column) {
     }
   
     return false;
-  }
+  };
   
-
-
- 
-export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver, handleTimerExpire) => {
-    const pieceList = sqr.filter(
-      (p) => p.color === currentTurn && p.piece != null
-    );
+  
+  export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver, handleTimerExpire) => {
+    const pieceList = sqr.filter((p) => p.color === currentTurn && p.piece != null);
     const possibleMoveList = [];
+    
     for (const piece of pieceList) {
       const moveList = findAvailableSqr(
         sqr,
@@ -277,11 +269,12 @@ export const checkGameOver = (sqr, currentTurn, findAvailableSqr, setGameOver, h
         possibleMoveList.push(...moveList);
       }
     }
+  
+    // If no moves are available for the current player, the game is over
     if (possibleMoveList.length === 0) {
       setGameOver(true);
-      handleTimerExpire()
-    } else {
-      setGameOver(false);
+      handleTimerExpire();  // Trigger game-over handling function immediately
     }
-  }
+  };
+  
    

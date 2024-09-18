@@ -24,7 +24,9 @@ export const handleWebSocketMessage = (data, props) => {
         setViewers,
         setGamePlayer,
         addUser,
-        handleGameEnd
+        handleGameEnd,
+        gameover
+        
         
         
     } = props;
@@ -56,7 +58,9 @@ export const handleWebSocketMessage = (data, props) => {
                     setIsRedTimerRunning(false);
                     setIsBlackTimerRunning(true);
                    
+
                 }
+                gameover();
                 
             }
             break;

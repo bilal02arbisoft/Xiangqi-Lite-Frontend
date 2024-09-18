@@ -19,6 +19,7 @@ import OverlayComponent from 'components/Overlay';
 import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
 import { useGameTimer } from 'Hooks/useGameTimer';
+import { checkGameOver } from 'utils/GameLogic';
 
 export const BoardContext = React.createContext();
 
@@ -84,11 +85,6 @@ const BoardPage = () => {
     
     const handleTimerExpire = () => {
         console.log(`${usernameRef.current} timer expired!`);
-
-       
-        if (isPlayerAllowedToMove()) {
-            console.log("Sending game.end event to the backend");
-
             
             if (wsManagerRef.current && wsManagerRef.current.isConnected) {
                 const message = JSON.stringify({
@@ -98,10 +94,8 @@ const BoardPage = () => {
                 });
                 wsManagerRef.current.sendMessage(message);
             }
-        } else {
-            console.log("Not allowed to send game.end event");
-        }
-    };
+        } 
+
 
     const updateChatMessages = (chatMessage) => {
         setChatMessages(prevMessages => [...prevMessages, chatMessage]);
@@ -126,6 +120,10 @@ const BoardPage = () => {
             setRedPlayer(userData[0]);
             setBlackPlayer(userData[1]);
         }
+    };
+
+    const gameover = () => {
+        checkGameOver(latestSqr.current,latestCurrentTurn.current,findAvailableSqr,setGameOver,handleTimerExpire)
     };
     
     const {
@@ -178,7 +176,8 @@ const BoardPage = () => {
         setViewers,
         setGamePlayer,
         addUser,
-        handleGameEnd
+        handleGameEnd,
+        gameover
     
     };
 
@@ -392,7 +391,6 @@ const BoardPage = () => {
         );
        
         
-
         if ( move && wsManagerRef.current && wsManagerRef.current.isConnected) {
             updateMoveHistory(currentTurn, moveplayed.current,latestFENOutput.current);
            
@@ -419,6 +417,7 @@ const BoardPage = () => {
             moveplayed.current = null;
             setShowWarning(false);
             setIsWarningActive(false);
+           
         }
     }
     function handleUndo() {
