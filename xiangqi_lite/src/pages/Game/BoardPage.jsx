@@ -63,7 +63,7 @@ const BoardPage = () => {
     const [users, setUsers] = useState({});
     const useridRef  = useRef(null);
     const [showWarning, setShowWarning] = useState(false); 
-    const [warningCountdown, setWarningCountdown] = useState(60); 
+    const [warningCountdown, setWarningCountdown] = useState(45); 
     const [isWarningActive, setIsWarningActive] = useState(false); 
     const [overlayType, setOverlayType] = useState('start'); 
     const [gameResult, setGameResult] = useState(''); 
@@ -243,6 +243,10 @@ const BoardPage = () => {
         async function initializeGame() {
             await fetchUserDetails();
             try {
+                setBlackMoveTimeRemaining(60);
+                setRedMoveTimeRemaining(60);
+                setBlackTimeRemaining(300);
+                setRedTimeRemaining(300);
                 const token = localStorage.getItem('access_token');
                 if (!gameIdFromParams) {
                     
@@ -251,6 +255,7 @@ const BoardPage = () => {
                             'Authorization': `Bearer ${token}`
                         }
                     });
+                   
                     const gameData = response.data;
                      gameIdRef.current = gameData.game_id;  
                     navigate(`/game/${gameData.game_id}`);  
@@ -342,10 +347,10 @@ const BoardPage = () => {
         
             inactivityTimeout = setTimeout(() => {
                 setShowWarning(true); 
-                setWarningCountdown(60);
+                setWarningCountdown(45);
                 setIsWarningActive(true);
 
-            }, 15000); 
+            }, 20000); 
         }
 
         return () => clearTimeout(inactivityTimeout); 
@@ -382,7 +387,6 @@ const BoardPage = () => {
         setSqr(newSqr);
     }
    
-
     function handleSelectSquare(row, column) {
         const newSqr = [...sqr];
         const index = newSqr.findIndex((s) => s.id === `${row}-${column}`);
