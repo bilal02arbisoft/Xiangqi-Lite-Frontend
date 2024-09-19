@@ -18,6 +18,8 @@ import GameTabs from 'components/GameTabs';
 import OverlayComponent from 'components/Overlay';
 import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
+import MoveRestrictionBanner from 'components/MoveRestriction'
+
 import { useGameTimer } from 'Hooks/useGameTimer';
 import { checkGameOver } from 'utils/GameLogic';
 import { useMoveTimer } from 'Hooks/useMoveTimer';
@@ -66,10 +68,26 @@ const BoardPage = () => {
     const [overlayType, setOverlayType] = useState('start'); 
     const [gameResult, setGameResult] = useState(''); 
     const [hasshown, Sethasshown] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [showMoveRestrictionBanner, setShowMoveRestrictionBanner] = useState(false);
 
     const isPlayerAllowedToMove = useCallback(() => {
         return gameplayer &&  isGameReady && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
     }, [gameplayer, currentTurn, isFlipped, isGameReady]);
+
+    const handleUserAttemptMove = useCallback(() => {
+        if (fenHistory.length > 0 && currentIndex !== fenHistory.length - 1) {
+         
+          setShowMoveRestrictionBanner(true);
+          setCurrentIndex(fenHistory.length - 1);
+          handleParseFENInput(fenHistory[fenHistory.length - 1]);
+          setTimeout(() => {
+            setShowMoveRestrictionBanner(false);
+          }, 5000);
+        }
+      }, [currentIndex, fenHistory, setCurrentIndex, handleParseFENInput]);
+      
+    
 
     const addUser = (newUsers) => {
         setUsers(prevUsers => {
@@ -105,7 +123,7 @@ const BoardPage = () => {
         setFENOutput(gameData.fen);
         handleParseFENInput(gameData.fen);
         setCurrentTurn(gameData.turn);
-        console.log("Current turn on game start",latestCurrentTurn.current)
+        console.log("Current turn on game start", latestCurrentTurn.current);
         gameIdRef.current = gameData.game_id;  
     
         if (usernameRef.current === gameData.black_player) {
@@ -114,8 +132,11 @@ const BoardPage = () => {
     
         setRedTimeRemaining(gameData.red_time_remaining);
         setBlackTimeRemaining(gameData.black_time_remaining);
-       
+
+        setFenHistory([]);
+        setMoveHistory([]);
     };
+    
     const handleUserListData = (userData) => {
         if (userData.length > 0) {
             setRedPlayer(userData[0]);
@@ -158,7 +179,7 @@ const BoardPage = () => {
         setFenHistory((prevFenHistory) => {
           const newFenHistory = [...prevFenHistory];
           newFenHistory.push(fen);
-      
+          setCurrentIndex(newFenHistory.length - 1);
           return newFenHistory;
         });
       }
@@ -279,7 +300,6 @@ const BoardPage = () => {
                 setIsCountdownActive(false);
                 setShowOverlay(false);
         
-                // Only start the respective timer once when countdown hits 0
                 if (latestCurrentTurn.current === 'red') {
                     setIsRedTimerRunning(true);
                     setIsBlackTimerRunning(false);
@@ -379,6 +399,10 @@ const BoardPage = () => {
     function handleMovePiece(piece, color, row, column) {
         
         if (!isPlayerAllowedToMove()) {
+            return;
+        }
+        if (fenHistory.length> 0 && currentIndex !== fenHistory.length - 1) {
+            handleUserAttemptMove();
             return;
         }
 
@@ -521,14 +545,14 @@ const BoardPage = () => {
                     users,
                     useridRef,
                     fenHistory,
-                    isPlayerAllowedToMove
+                    isPlayerAllowedToMove,
+                    currentIndex,
+                    setCurrentIndex
                     
                 }}
             >
-    <div className="app__container">
-    
+     <div className="app__container">
                     <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
-
                         <OverlayComponent
                             gameId={gameIdRef.current}
                             isVisible={showOverlay}
@@ -541,51 +565,55 @@ const BoardPage = () => {
                             blackPlayer={blackPlayer}
                         />
                         <div className="left-container">
-      {showWarning && (
-        <div className="warning-banner">
-          <p>Game will be abandoned in {warningCountdown < 10 ? `0${warningCountdown}` : warningCountdown} s</p>
-        </div>
-      )}
+                           
+                            {showMoveRestrictionBanner && (
+                                <MoveRestrictionBanner 
+                                    duration={10} 
+                                    onHide={() => setShowMoveRestrictionBanner(false)} 
+                                />
+                            )}
+                           
+                            {showWarning && (
+                                <div className="warning-banner">
+                                    <p>Game will be abandoned in {warningCountdown < 10 ? `0${warningCountdown}` : warningCountdown} s</p>
+                                </div>
+                            )}
 
-      <Board squares={sqr} />
-      
-     
-      <FooterComponent onResign={handleTimerExpire} /> 
+                            <Board squares={sqr} />
+                            <FooterComponent onResign={handleTimerExpire} />
+                        </div>
+                    </div>
 
-    </div>
-  </div>
-                
+                    <div className="side-container">
+                        <PlayerTimer
+                            isFlipped={isFlipped}
+                            blackTimeRemaining={blackTimeRemaining}
+                            redTimeRemaining={redTimeRemaining}
+                            blackMoveTimer={blackMoveTimeRemaining}
+                            redMoveTimer={redMoveTimeRemaining}
+                            redPlayer={redPlayer}
+                            blackPlayer={blackPlayer}
+                            isTimerActive={latestCurrentTurn.current === "black"}
+                        />
 
-        <div className="side-container">
-          <PlayerTimer
-            isFlipped={isFlipped}
-            blackTimeRemaining={blackTimeRemaining}
-            redTimeRemaining={redTimeRemaining}
-            blackMoveTimer={blackMoveTimeRemaining}
-            redMoveTimer = {redMoveTimeRemaining}
-            redPlayer={redPlayer}
-            blackPlayer={blackPlayer}
-            isTimerActive={latestCurrentTurn.current === "black"}
-          />
+                        <div className="combined-section">
+                            <div className="tabs-container">
+                                <GameTabs />
+                            </div>
 
-          <div className="combined-section">
-            <div className="tabs-container">
-              <GameTabs />
-            </div>
-
-            <PlayerTimer
-              isFlipped={!isFlipped}
-              blackTimeRemaining={blackTimeRemaining}
-              redTimeRemaining={redTimeRemaining}
-              blackMoveTimer={blackMoveTimeRemaining}
-              redMoveTimer = {redMoveTimeRemaining}
-              redPlayer={redPlayer}
-              blackPlayer={blackPlayer}
-              isTimerActive={latestCurrentTurn.current === "red"}
-            />
-          </div>
-        </div>
-      </div>
+                            <PlayerTimer
+                                isFlipped={!isFlipped}
+                                blackTimeRemaining={blackTimeRemaining}
+                                redTimeRemaining={redTimeRemaining}
+                                blackMoveTimer={blackMoveTimeRemaining}
+                                redMoveTimer={redMoveTimeRemaining}
+                                redPlayer={redPlayer}
+                                blackPlayer={blackPlayer}
+                                isTimerActive={latestCurrentTurn.current === "red"}
+                            />
+                        </div>
+                    </div>
+                </div>
             </BoardContext.Provider>
         </DndProvider>
     );

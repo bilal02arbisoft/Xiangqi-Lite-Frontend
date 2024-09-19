@@ -1,11 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
-
 import { BoardContext } from 'pages/Game';
 
 const MoveHistory = (props) => {
   const { moveHistory } = props;
-  const { handleParseFENInput, fenHistory, isPlayerAllowedToMove } = useContext(BoardContext);
-  const [currentIndex, setCurrentIndex] = useState(fenHistory.length - 1); 
+  const { handleParseFENInput, fenHistory, isPlayerAllowedToMove, currentIndex, setCurrentIndex } = useContext(BoardContext);
   const [showTotalMoves, setShowTotalMoves] = useState(true); 
 
   const chunkMoves = (moves) => {
@@ -20,13 +18,11 @@ const MoveHistory = (props) => {
   const totalMoves = moveHistory.length; 
 
   useEffect(() => {
-    
     if (fenHistory.length > 0) {
       setCurrentIndex(fenHistory.length - 1);
     }
-  }, [fenHistory]);
+  }, [fenHistory, setCurrentIndex]);
 
- 
   const goToFirstMove = () => {
     if (fenHistory.length > 0) {
       setCurrentIndex(0);
@@ -35,7 +31,6 @@ const MoveHistory = (props) => {
     }
   };
 
-  
   const goToPreviousMove = () => {
     if (currentIndex > 0 && fenHistory.length > 0) {
       const newIndex = currentIndex - 1;
@@ -45,7 +40,6 @@ const MoveHistory = (props) => {
     }
   };
 
-  
   const goToNextMove = () => {
     if (currentIndex < fenHistory.length - 1 && fenHistory.length > 0) {
       const newIndex = currentIndex + 1;
@@ -55,7 +49,6 @@ const MoveHistory = (props) => {
     }
   };
 
-  
   const goToLastMove = () => {
     if (fenHistory.length > 0) {
       const lastIndex = fenHistory.length - 1;
@@ -64,7 +57,6 @@ const MoveHistory = (props) => {
       setShowTotalMoves(false);
     }
   };
-
 
   const playerAllowedToMove = isPlayerAllowedToMove();
 
@@ -88,7 +80,7 @@ const MoveHistory = (props) => {
           onClick={goToFirstMove}
           className="control-button"
           title="First Move"
-          disabled={playerAllowedToMove || currentIndex === 0 || fenHistory.length === 0}
+          disabled={ currentIndex === 0 || fenHistory.length === 0}
         >
           |&lt;
         </button>
@@ -96,7 +88,7 @@ const MoveHistory = (props) => {
           onClick={goToPreviousMove}
           className="control-button"
           title="Previous Move"
-          disabled={playerAllowedToMove || currentIndex === 0 || fenHistory.length === 0}
+          disabled={ currentIndex === 0 || fenHistory.length === 0}
         >
           &lt;
         </button>
@@ -107,7 +99,7 @@ const MoveHistory = (props) => {
           onClick={goToNextMove}
           className="control-button"
           title="Next Move"
-          disabled={playerAllowedToMove || currentIndex >= fenHistory.length - 1 || fenHistory.length === 0}
+          disabled={ currentIndex >= fenHistory.length - 1 || fenHistory.length === 0}
         >
           &gt;
         </button>
@@ -115,7 +107,7 @@ const MoveHistory = (props) => {
           onClick={goToLastMove}
           className="control-button"
           title="Last Move"
-          disabled={playerAllowedToMove || currentIndex === fenHistory.length - 1 || fenHistory.length === 0}
+          disabled={ currentIndex === fenHistory.length - 1 || fenHistory.length === 0}
         >
           &gt;|
         </button>
