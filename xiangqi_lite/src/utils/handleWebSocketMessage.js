@@ -47,12 +47,18 @@ export const handleWebSocketMessage = (data, props) => {
             if (data.fen && data.player !== latestCurrentTurn.current) {
                 handleParseFENInput(data.fen);
                 setCurrentTurn(data.player);
-                updateMoveHistory(data.player, data.move, data.fen);
-                console.log("current turn ",latestCurrentTurn.current)
+                updateMoveHistory(
+                    data.player,
+                    data.move,
+                    data.fen,
+                    data.thinking_time, 
+                    data.red_time_remaining,
+                    data.black_time_remaining
+                );
+             
                 setRedTimeRemaining(data.red_time_remaining);
                 setBlackTimeRemaining(data.black_time_remaining);
-                console.log("red time remaining",data.red_time_remaining)
-                console.log("black time remaining",data.black_time_remaining)
+               
                 setRedMoveTimeRemaining(60);
                 setBlackMoveTimeRemaining(60);
                 setServerTime(data.server_time * 1000);

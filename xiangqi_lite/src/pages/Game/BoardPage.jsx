@@ -48,8 +48,7 @@ const BoardPage = () => {
     const [, setServerTime] = useState(Date.now());
     const [, setTurnStartTime, latestTurnStartTime] = useState(null); 
     const wsManagerRef = useRef(null); 
-    const [moveHistory, setMoveHistory] = useState([]); 
-    const [fenHistory, setFenHistory] = useState([]); 
+    const [history, setHistory,latestHistory] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
     const [redPlayer, setRedPlayer,latestRed] = useState(null);
     const [blackPlayer, setBlackPlayer,latestBlack] = useState(null);
@@ -68,7 +67,7 @@ const BoardPage = () => {
     const [overlayType, setOverlayType] = useState('start'); 
     const [gameResult, setGameResult] = useState(''); 
     const [hasshown, Sethasshown] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex, latestcurrentindex] = useState(0);
     const [showMoveRestrictionBanner, setShowMoveRestrictionBanner] = useState(false);
 
     const isPlayerAllowedToMove = useCallback(() => {
@@ -76,17 +75,25 @@ const BoardPage = () => {
     }, [gameplayer, currentTurn, isFlipped, isGameReady]);
 
     const handleUserAttemptMove = useCallback(() => {
-        if (fenHistory.length > 0 && currentIndex !== fenHistory.length - 1) {
-         
-          setShowMoveRestrictionBanner(true);
-          setCurrentIndex(fenHistory.length - 1);
-          handleParseFENInput(fenHistory[fenHistory.length - 1]);
-          setTimeout(() => {
-            setShowMoveRestrictionBanner(false);
-          }, 5000);
+        if (history.length > 0 && latestcurrentindex.current !== history.length - 1) {
+            console.log("History length",history.length)
+            console.log("Current index",latestcurrentindex.current)
+            
+            setShowMoveRestrictionBanner(true);
+            
+            
+            setCurrentIndex(history.length - 1);
+            
+           
+            handleParseFENInput(history[history.length - 1].fen);
+            
+            
+            setTimeout(() => {
+                setShowMoveRestrictionBanner(false);
+            }, 5000);
         }
-      }, [currentIndex, fenHistory, setCurrentIndex, handleParseFENInput]);
-      
+    }, [currentIndex, history, setCurrentIndex, handleParseFENInput]);
+    
     
 
     const addUser = (newUsers) => {
@@ -133,8 +140,7 @@ const BoardPage = () => {
         setRedTimeRemaining(gameData.red_time_remaining);
         setBlackTimeRemaining(gameData.black_time_remaining);
 
-        setFenHistory([]);
-        setMoveHistory([]);
+        setHistory([]);
     };
     
     const handleUserListData = (userData) => {
@@ -168,21 +174,21 @@ const BoardPage = () => {
     } = useMoveTimer(60, 60, handleTimerExpire,isPlayerAllowedToMove);
     
 
-    function updateMoveHistory(player, move, fen) {
-        setMoveHistory((prevHistory) => {
-          const newHistory = [...prevHistory];
-          newHistory.push(move);
-      
-          return newHistory;
+    function updateMoveHistory(player, move, fen, moveTime, remainingTimeRed, remainingTimeBlack) {
+        setHistory((prevHistory) => {
+            const newHistory = [...prevHistory];
+            newHistory.push({
+                move,
+                fen,
+                player,
+                moveTime, 
+                remainingTimeRed,
+                remainingTimeBlack,
+            });
+            return newHistory;
         });
-      
-        setFenHistory((prevFenHistory) => {
-          const newFenHistory = [...prevFenHistory];
-          newFenHistory.push(fen);
-          setCurrentIndex(newFenHistory.length - 1);
-          return newFenHistory;
-        });
-      }
+        setCurrentIndex(latestHistory.current.length-1); 
+    }
 
     const webSocketProps = {
         setRedTimeRemaining,
@@ -198,7 +204,6 @@ const BoardPage = () => {
         usernameRef,
         latestCurrentTurn,
         updateMoveHistory,
-        moveHistory,
         updateChatMessages,
         handleGameGetSuccess,
         handleUserListData,
@@ -405,7 +410,7 @@ const BoardPage = () => {
         if (!isPlayerAllowedToMove()) {
             return;
         }
-        if (fenHistory.length> 0 && currentIndex !== fenHistory.length - 1) {
+        if (history.length> 0 && currentIndex !== history.length - 1) {
             handleUserAttemptMove();
             return;
         }
@@ -439,9 +444,17 @@ const BoardPage = () => {
         );
        
         if ( move && wsManagerRef.current && wsManagerRef.current.isConnected) {
-            updateMoveHistory(currentTurn, moveplayed.current,latestFENOutput.current);
-           
             const thinkingTime = Math.floor((Date.now() - latestTurnStartTime.current) / 1000); 
+            updateMoveHistory(
+                latestCurrentTurn.current,
+                moveplayed.current,
+                latestFENOutput.current,
+                thinkingTime,
+                redTimeRemaining, 
+                blackTimeRemaining
+            );
+    
+            
             handleGenerateFEN();
             console.log("In move sending data")
             console.log("current turn is ",currentTurn)
@@ -479,19 +492,10 @@ const BoardPage = () => {
         }
     }
     function handleUndo() {
-        if (moveHistory.length > 0 && fenHistory.length > 1) { 
-            const newMoveHistory = moveHistory.slice(0, -1);
-            const newFenHistory = fenHistory.slice(0, -1); 
-    
-            setMoveHistory(newMoveHistory);
-            setFenHistory(newFenHistory);
-    
-            const previousFEN = newFenHistory[newFenHistory.length - 1];
-            handleParseFENInput(previousFEN); 
+          
         }
-    }
-
     
+
 
     function handleFlipBoard() {
         setIsFlipped(true);
@@ -538,7 +542,7 @@ const BoardPage = () => {
                     handleOpenErrorModal,
                     findAvailableSqr,
                     handleSelectSquare,
-                    moveHistory,
+                    history,
                     wsManagerRef,
                     updateChatMessages,
                     chatMessages,
@@ -548,10 +552,14 @@ const BoardPage = () => {
                     usernameRef,
                     users,
                     useridRef,
-                    fenHistory,
                     isPlayerAllowedToMove,
                     currentIndex,
-                    setCurrentIndex
+                    setCurrentIndex,
+                    isGameReady, 
+                    setRedTimeRemaining,
+                    setBlackTimeRemaining,
+                    setRedMoveTimeRemaining,
+                    setBlackMoveTimeRemaining,
                     
                 }}
             >
