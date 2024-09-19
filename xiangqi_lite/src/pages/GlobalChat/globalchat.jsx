@@ -1,4 +1,3 @@
-// GlobalChat.js
 
 import axios from 'axios';
 import React, { useEffect, useRef } from 'react';
@@ -75,20 +74,16 @@ const GlobalChat = () => {
                 params: params
             });
             const newMessages = response.data.messages;
-
             if (newMessages.length === 0) {
                 setHasMoreMessages(false);
             } else {
-                
                 const userIds = newMessages
                     .map((msg) => msg.user_id)
                     .filter((id, index, self) => id && self.indexOf(id) === index);
 
                
                 const profilesToFetch = userIds.filter((id) => !LatestProfiles.current[id]);
-
                 await fetchUserProfiles(profilesToFetch);
-            
                 const updatedMessages = loadMore
                     ? [...newMessages, ...LatestMessages.current]
                     : [...LatestMessages.current, ...newMessages];
@@ -96,7 +91,6 @@ const GlobalChat = () => {
 
                 setMessages(updatedMessages);
 
-                // Update lastId
                 const oldestMessage = updatedMessages[0];
                 setLastId(oldestMessage.id);
             }
@@ -141,7 +135,6 @@ const GlobalChat = () => {
     useEffect(() => {
        
         fetchMessages();
-
         wsManagerRef.current = singletonWebSocketManager.getInstance();
         wsManagerRef.current.addMessageListener(handleWebSocketMessage);
 

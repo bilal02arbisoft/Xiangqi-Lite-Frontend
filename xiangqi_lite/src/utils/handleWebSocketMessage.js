@@ -25,7 +25,11 @@ export const handleWebSocketMessage = (data, props) => {
         setGamePlayer,
         addUser,
         handleGameEnd,
-        gameover
+        gameover,
+        setRedMoveTimeRemaining,
+        setBlackMoveTimeRemaining,
+        setIsRedMoveTimerRunning,
+        setIsBlackMoveTimerRunning
         
         
         
@@ -33,7 +37,7 @@ export const handleWebSocketMessage = (data, props) => {
 
     switch (data.type) {
         case 'game.start':
-            setTurnStartTime(Date.now());
+            
             if ( usernameRef.current === data.black_player) {
                 handleFlipBoard();
             }
@@ -44,24 +48,34 @@ export const handleWebSocketMessage = (data, props) => {
         case 'game.move':
             if (data.fen && data.player !== latestCurrentTurn.current) {
                 handleParseFENInput(data.fen);
+                console.log("Previous turn ",latestCurrentTurn.current)
+                console.log("player ",data.player)
+
                 setCurrentTurn(data.player);
+                console.log("current turn ",latestCurrentTurn.current)
                 setRedTimeRemaining(data.red_time_remaining);
                 setBlackTimeRemaining(data.black_time_remaining);
+                console.log("red time remaining",data.red_time_remaining)
+                console.log("black time remaining",data.black_time_remaining)
+                setRedMoveTimeRemaining(60);
+                setBlackMoveTimeRemaining(60);
                 setServerTime(data.server_time * 1000);
                 updateMoveHistory(data.player, data.move, data.fen);
                 setTurnStartTime(Date.now());
                 if (data.player === 'red') {
                     setIsRedTimerRunning(true);
                     setIsBlackTimerRunning(false);
+                    setIsRedMoveTimerRunning(true);
+                    setIsBlackMoveTimerRunning(false);
                    
                 } else {
                     setIsRedTimerRunning(false);
                     setIsBlackTimerRunning(true);
-                   
+                    setIsRedMoveTimerRunning(false);
+                    setIsBlackMoveTimerRunning(true);
 
                 }
                 gameover();
-                
             }
             break;
 
@@ -85,25 +99,24 @@ export const handleWebSocketMessage = (data, props) => {
             break;
         
         case 'game.viewer.joined':
-            setViewers((prevViewers) => [...prevViewers, data.data]);
-            console.log("My username",usernameRef.current)
-            console.log("Revied username",data.data.username)
-            addUser(data.data)
-            setShowOverlay(false)
-            if ( usernameRef.current === data.data.username) {
-                setIsGameReady(true);
-                setGamePlayer(false) ;
-                if (latestCurrentTurn.current === 'red') {
-                    setIsRedTimerRunning(true);
-                    setIsBlackTimerRunning(false);
-        
+            // setViewers((prevViewers) => [...prevViewers, data.data]);
+            // console.log("My username",usernameRef.current)
+            // console.log("Revied username",data.data.username)
+            // addUser(data.data)
+            // setShowOverlay(false)
+            // if ( usernameRef.current === data.data.username) {
+            //     setIsGameReady(true);
+            //     setGamePlayer(false) ;
+            //     if (latestCurrentTurn.current === 'red') {
+            //         setIsRedTimerRunning(true);
+            //         setIsBlackTimerRunning(false);
                     
-                } else {
-                    setIsRedTimerRunning(false);
-                    setIsBlackTimerRunning(true);
+            //     } else {
+            //         setIsRedTimerRunning(false);
+            //         setIsBlackTimerRunning(true);
                     
-                }  
-            }
+            //     }  
+            // }
            
             break;
         case 'game.end.success':

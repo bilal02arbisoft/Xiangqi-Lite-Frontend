@@ -20,6 +20,7 @@ import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
 import { useGameTimer } from 'Hooks/useGameTimer';
 import { checkGameOver } from 'utils/GameLogic';
+import { useMoveTimer } from 'Hooks/useMoveTimer';
 
 export const BoardContext = React.createContext();
 
@@ -64,6 +65,7 @@ const BoardPage = () => {
     const [isWarningActive, setIsWarningActive] = useState(false); 
     const [overlayType, setOverlayType] = useState('start'); 
     const [gameResult, setGameResult] = useState(''); 
+    const [hasshown, Sethasshown] = useState(false);
 
     const isPlayerAllowedToMove = useCallback(() => {
         return gameplayer &&  isGameReady && ((currentTurn === "red" && !isFlipped) || (currentTurn === "black" && isFlipped));
@@ -95,7 +97,6 @@ const BoardPage = () => {
                 wsManagerRef.current.sendMessage(message);
             }
         } 
-
 
     const updateChatMessages = (chatMessage) => {
         setChatMessages(prevMessages => [...prevMessages, chatMessage]);
@@ -132,8 +133,19 @@ const BoardPage = () => {
         blackTimeRemaining,
         setBlackTimeRemaining,
         setIsRedTimerRunning,
-        setIsBlackTimerRunning
+        setIsBlackTimerRunning,
+        
     } = useGameTimer(300, 300,handleTimerExpire,isPlayerAllowedToMove);
+
+    const {
+        redMoveTimeRemaining,
+        setRedMoveTimeRemaining, 
+        blackMoveTimeRemaining, 
+        setBlackMoveTimeRemaining, 
+        setIsRedMoveTimerRunning, 
+        setIsBlackMoveTimerRunning
+    } = useMoveTimer(60, 60, handleTimerExpire,isPlayerAllowedToMove);
+    
 
     function updateMoveHistory(player, move, fen) {
         setMoveHistory((prevHistory) => {
@@ -158,12 +170,12 @@ const BoardPage = () => {
         setIsRedTimerRunning,
         setIsBlackTimerRunning,
         setTurnStartTime,
-        handleFlipBoard, 
-        handleParseFENInput, 
+        handleFlipBoard,
+        handleParseFENInput,
         setCurrentTurn,
-        setError, 
+        setError,
         usernameRef,
-        latestCurrentTurn, 
+        latestCurrentTurn,
         updateMoveHistory,
         moveHistory,
         updateChatMessages,
@@ -171,13 +183,17 @@ const BoardPage = () => {
         handleUserListData,
         setIsGameReady,
         setShowOverlay,
-        setShowCountdown,
+        setShowCountdown, 
         setIsCountdownActive,
         setViewers,
         setGamePlayer,
         addUser,
         handleGameEnd,
-        gameover
+        gameover,
+        setRedMoveTimeRemaining,
+        setBlackMoveTimeRemaining,
+        setIsRedMoveTimerRunning,
+        setIsBlackMoveTimerRunning
     
     };
 
@@ -253,31 +269,34 @@ const BoardPage = () => {
         }, []); 
         
         
-
         useEffect(() => {
             let timerId;
-    
             if (isCountdownActive && countdown > 0) {
                 timerId = setTimeout(() => {
                     setCountdown(countdown - 1);
                 }, 1000);
             } else if (countdown === 0) {
-                setIsCountdownActive(false); 
-                setShowOverlay(false); 
+                setIsCountdownActive(false);
+                setShowOverlay(false);
+        
+                // Only start the respective timer once when countdown hits 0
                 if (latestCurrentTurn.current === 'red') {
                     setIsRedTimerRunning(true);
                     setIsBlackTimerRunning(false);
-        
-                    
+                    setIsRedMoveTimerRunning(true);
+                    setIsBlackMoveTimerRunning(false);
                 } else {
-                    setIsRedTimerRunning(false);
                     setIsBlackTimerRunning(true);
-                    
+                    setIsRedTimerRunning(false);
+                    setIsRedMoveTimerRunning(false);
+                    setIsBlackMoveTimerRunning(true);
                 }
+                setTurnStartTime(Date.now());
             }
-    
+        
             return () => clearTimeout(timerId);
         }, [countdown, isCountdownActive]);
+        
            
     useEffect(() => {
         let warningTimerId;
@@ -289,6 +308,7 @@ const BoardPage = () => {
             setIsWarningActive(false);
             handleTimerExpire();
             setGameOver(true);
+
         }
 
         return () => clearTimeout(warningTimerId);
@@ -297,7 +317,7 @@ const BoardPage = () => {
     useEffect(() => {
         let inactivityTimeout;
         
-        if (isGameReady && isPlayerAllowedToMove() && !moveplayed.current) {
+        if (isGameReady && isPlayerAllowedToMove() && !moveplayed.current && !hasshown) {
            
         
             inactivityTimeout = setTimeout(() => {
@@ -320,6 +340,8 @@ const BoardPage = () => {
         setShowWarning(false);
         setIsRedTimerRunning(false);
         setIsBlackTimerRunning(false);
+        setIsBlackMoveTimerRunning(false);
+        setIsRedMoveTimerRunning(false);
         const winner =result
         const loser = latestRed.current.username === winner ? latestBlack.current.username : latestRed.current.username;
         setGameResult({
@@ -329,7 +351,6 @@ const BoardPage = () => {
     }
 
        
-
     function addAvailableStyle() {
         const newSqr = [...sqr];
         for (const s of newSqr) {
@@ -357,7 +378,6 @@ const BoardPage = () => {
     
     function handleMovePiece(piece, color, row, column) {
         
-
         if (!isPlayerAllowedToMove()) {
             return;
         }
@@ -390,12 +410,14 @@ const BoardPage = () => {
             handleTimerExpire
         );
        
-        
         if ( move && wsManagerRef.current && wsManagerRef.current.isConnected) {
             updateMoveHistory(currentTurn, moveplayed.current,latestFENOutput.current);
            
             const thinkingTime = Math.floor((Date.now() - latestTurnStartTime.current) / 1000); 
             handleGenerateFEN();
+            console.log("In move sending data")
+            console.log("current turn is ",currentTurn)
+            console.log("latest current turn is ",latestCurrentTurn.current)
 
             const message = JSON.stringify({
                 type: 'game.move',
@@ -405,18 +427,26 @@ const BoardPage = () => {
                 thinking_time: thinkingTime 
             });
             wsManagerRef.current.sendMessage(message);
+            
 
             if (latestCurrentTurn.current === 'red') {
                 setIsRedTimerRunning(true);
                 setIsBlackTimerRunning(false);
+                setIsRedMoveTimerRunning(true);
+                setIsBlackMoveTimerRunning(false);
             } else {
                 setIsBlackTimerRunning(true);
                 setIsRedTimerRunning(false);
+                setIsRedMoveTimerRunning(false);
+                setIsBlackMoveTimerRunning(true);
             }
            
             moveplayed.current = null;
+            setRedMoveTimeRemaining(60);
+            setBlackMoveTimeRemaining(60);
             setShowWarning(false);
             setIsWarningActive(false);
+            Sethasshown(true);
            
         }
     }
@@ -531,6 +561,8 @@ const BoardPage = () => {
             isFlipped={isFlipped}
             blackTimeRemaining={blackTimeRemaining}
             redTimeRemaining={redTimeRemaining}
+            blackMoveTimer={blackMoveTimeRemaining}
+            redMoveTimer = {redMoveTimeRemaining}
             redPlayer={redPlayer}
             blackPlayer={blackPlayer}
             isTimerActive={latestCurrentTurn.current === "black"}
@@ -545,6 +577,8 @@ const BoardPage = () => {
               isFlipped={!isFlipped}
               blackTimeRemaining={blackTimeRemaining}
               redTimeRemaining={redTimeRemaining}
+              blackMoveTimer={blackMoveTimeRemaining}
+              redMoveTimer = {redMoveTimeRemaining}
               redPlayer={redPlayer}
               blackPlayer={blackPlayer}
               isTimerActive={latestCurrentTurn.current === "red"}

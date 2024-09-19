@@ -64,38 +64,37 @@ body, html {
   justify-content: space-between;
   border-top: 1px solid;
   border-color: rgb(218, 210, 202);
-  border-image: initial;
-  
+}
+
+.timers-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; 
 }
 
 .timer-container {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
 }
 
-
-.timer-container-bottom {
-  margin: 10px;
-  
-  
-}
-.timer-container-top {
-  margin: 10px;
-  
+.timer-container-bottom, .timer-container-top {
+  margin: 5px; 
 }
 
 .timer {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  font-size: 16px; 
+  align-items: center;
+  font-size: 16px;
 }
 
 .timer p {
-  margin: 0; 
-  padding: 5px; 
+  margin: 0;
+  padding: 5px;
 }
+
 .tabs-container {
   margin-top: 10px; 
   margin-bottom: 10px; 
