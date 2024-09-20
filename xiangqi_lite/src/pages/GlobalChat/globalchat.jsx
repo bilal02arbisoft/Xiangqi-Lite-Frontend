@@ -7,6 +7,8 @@ import './globalchat.css';
 
 import singletonWebSocketManager from 'utils/WebSocket';
 
+import Sidebar from 'components/SideBar';
+
 const GlobalChat = () => {
     const getFormattedDate = () => {
         const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -153,7 +155,12 @@ const GlobalChat = () => {
             const profile = LatestProfiles.current[message.user_id];
 
             return (
+                <>
+                <div className='sidebar'>
+                <Sidebar></Sidebar>
+                </div>
                 <div key={message.id} className="message">
+
                     <img
                         src={profile ? `http://127.0.0.1:8000${profile.profile_picture}` : 'default_profile.png'}
                         alt="User Profile"
@@ -169,6 +176,7 @@ const GlobalChat = () => {
                         {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                 </div>
+                </>
             );
         });
     };

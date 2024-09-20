@@ -1,7 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useEffect, useRef } from 'react';
+
 import './home.css'; 
+
 import singletonWebSocketManager from 'utils/WebSocket';
+import Sidebar from 'components/SideBar';
+
 
 const Home = () => {
     const wsManagerRef = useRef();
@@ -60,6 +64,9 @@ const Home = () => {
 
     return (
         <div className="home-container">
+             <div className='sidebar'>
+                <Sidebar></Sidebar>
+                </div>
           
             <main className="main-content">
                 <header className="header">

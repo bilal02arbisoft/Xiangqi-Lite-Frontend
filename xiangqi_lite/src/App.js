@@ -28,14 +28,14 @@ const App = () => {
           </Route>
 
         
-          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+        
             <Route path="/" element={<Home />} />
             <Route path="globalchat" element={<GlobalChat />} />
             <Route path="/friend" element={<FriendsPage />} />
             <Route path="/verify-otp" element={<VerifyOtpPage />} />
             <Route path="/profile" element={<ProfileEditPage />} />
             <Route path="/game/:game_id?" element={<BoardPage />} />
-          </Route>
+       
         </Routes>
       </BrowserRouter>
     </AuthProvider>

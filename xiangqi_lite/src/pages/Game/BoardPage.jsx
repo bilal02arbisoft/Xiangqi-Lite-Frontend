@@ -19,6 +19,7 @@ import OverlayComponent from 'components/Overlay';
 import FooterComponent from 'components/Footer';
 import PlayerTimer from 'components/PlayerTimer';
 import MoveRestrictionBanner from 'components/MoveRestriction'
+import Sidebar from 'components/SideBar';
 
 import { useGameTimer } from 'Hooks/useGameTimer';
 import { checkGameOver } from 'utils/GameLogic';
@@ -560,11 +561,15 @@ const BoardPage = () => {
                     setBlackTimeRemaining,
                     setRedMoveTimeRemaining,
                     setBlackMoveTimeRemaining,
-                    
+                    gameIdRef
                 }}
             >
      <div className="app__container">
                     <div className={`board-container ${showOverlay ? 'blurred' : ''}`}>
+                   
+                <div className='sidebar'>
+                <Sidebar></Sidebar>
+                </div>
                         <OverlayComponent
                             gameId={gameIdRef.current}
                             isVisible={showOverlay}
@@ -592,7 +597,7 @@ const BoardPage = () => {
                             )}
 
                             <Board squares={sqr} />
-                            <FooterComponent onResign={handleTimerExpire} />
+                           { isGameReady && ( <FooterComponent onResign={handleTimerExpire} />)}
                         </div>
                     </div>
 
