@@ -1,0 +1,43 @@
+img {
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+.square__available {
+  position: relative;
+  width:70 ;
+
+}
+.square {
+  width:80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.square__available::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 25px; 
+  height: 25px; 
+  background-color: #c800ff; 
+  border-radius: 50%; 
+  transform: translate(-50%, -50%); 
+  pointer-events: none; 
+}
+
+
+
+.square__selected {
+  background: none; 
+  border-radius: 100%; 
+  border: 6px solid rgb(245, 168, 23);
+}
+.square__highlight {
+  background: none;
+}

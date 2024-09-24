@@ -1,0 +1,14 @@
+.board {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 0px;
+    display: grid;
+    grid-template-columns: repeat(9,80px); 
+    grid-template-rows: repeat(10, 80px); 
+    width: 720px; 
+    height: 800px; 
+    background: url('images/xiangqi_gmchess_wood.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

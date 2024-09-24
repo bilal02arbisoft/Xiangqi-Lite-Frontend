@@ -1,0 +1,62 @@
+.overlay-component .modal p {
+    word-wrap: break-word; 
+    margin-bottom: 10px;
+}
+.overlay-component {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);  
+    width: calc(100% - 30px);  
+    height: calc(100% - 10px);  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);  
+    z-index: 1000;  
+    margin-left: 10px;
+  }
+  .player-results {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.player-card-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    text-align: center;
+    margin: 0 10px; 
+}
+.modal {
+  position: relative;  
+  background: rgb(246, 241, 232);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(77, 76, 76, 0.1);
+  text-align: center;
+  width: 300px;
+  margin-bottom: 80px;
+  transition: width 0.3s, height 0.3s;
+}
+
+  .modal-large {
+    width: 450px; 
+    height: 200px;
+}
+.close-button {
+  position: absolute;
+  top: 1px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+.close-button:hover {
+  color: #ff0000; 
+}
